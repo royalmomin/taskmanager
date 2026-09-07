@@ -1,0 +1,179 @@
+<!-- ROYAL MANAGER: Dashboard View (Redesign) -->
+<div id="view-dashboard" class="view-section">
+  
+  <div class="dash-banner">
+    <h1>Good Afternoon, Royal!</h1>
+    <p>Keep your legal and company work on track.</p>
+    <div class="handwritten">Plan<br>Track<br>Achieve</div>
+  </div>
+  
+  <div class="top-stats-grid">
+    <div class="stat-card sc-total">
+      <div class="icon-wrap"><span class="material-symbols-outlined">description</span></div>
+      <div class="info">
+        <div class="title">Total Matters</div>
+        <div class="count" id="dash-total">-</div>
+        <div class="desc">All active & closed</div>
+      </div>
+    </div>
+    <div class="stat-card sc-process">
+      <div class="icon-wrap"><span class="material-symbols-outlined">sync</span></div>
+      <div class="info">
+        <div class="title">Under Process</div>
+        <div class="count" id="dash-process">-</div>
+        <div class="desc">In progress</div>
+      </div>
+    </div>
+    <div class="stat-card sc-pending">
+      <div class="icon-wrap"><span class="material-symbols-outlined">schedule</span></div>
+      <div class="info">
+        <div class="title">Pending</div>
+        <div class="count" id="dash-pending">-</div>
+        <div class="desc">Awaiting action</div>
+      </div>
+    </div>
+    <div class="stat-card sc-overdue">
+      <div class="icon-wrap"><span class="material-symbols-outlined">warning</span></div>
+      <div class="info">
+        <div class="title">Overdue</div>
+        <div class="count" id="dash-overdue">-</div>
+        <div class="desc">Needs immediate attention</div>
+      </div>
+    </div>
+    <div class="stat-card sc-completed">
+      <div class="icon-wrap"><span class="material-symbols-outlined">check_circle</span></div>
+      <div class="info">
+        <div class="title">Completed</div>
+        <div class="count" id="dash-completed">-</div>
+        <div class="desc">Successfully closed</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-grid">
+    <div class="cat-card cat-tm">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Trademark')">
+        <div class="left">
+          <div class="icon-wrap">R</div>
+          <div class="title">Trademark</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="tm-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Trademark-Active')"><span>Active Trademarks</span> <div class="num-wrap"><span id="tm-reg">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-New Application')"><span>New Applications</span> <div class="num-wrap"><span id="tm-new">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Opposition')"><span>Oppositions</span> <div class="num-wrap"><span id="tm-opp">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Rectification')"><span>Rectifications</span> <div class="num-wrap"><span id="tm-rect">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Renewal')"><span>Renewals</span> <div class="num-wrap"><span id="tm-ren">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Hearing')"><span>Hearings</span> <div class="num-wrap"><span id="tm-hear">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Other')"><span>Others</span> <div class="num-wrap"><span id="tm-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+    
+    <div class="cat-card cat-cp">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Copyright')">
+        <div class="left">
+          <div class="icon-wrap">C</div>
+          <div class="title">Copyright</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="cp-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Copyright-Active')"><span>Active Copyrights</span> <div class="num-wrap"><span id="cp-reg">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-New Application')"><span>New Applications</span> <div class="num-wrap"><span id="cp-new">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Objection / Reply')"><span>Objections / Reply</span> <div class="num-wrap"><span id="cp-obj">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Hearing')"><span>Hearings</span> <div class="num-wrap"><span id="cp-hear">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Other')"><span>Others</span> <div class="num-wrap"><span id="cp-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+    
+    <div class="cat-card cat-co">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Company Tasks')">
+        <div class="left">
+          <div class="icon-wrap"><span class="material-symbols-outlined" style="font-size:24px;">domain</span></div>
+          <div class="title">Company Tasks</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="co-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Compliance / ROC')"><span>Compliance / ROC</span> <div class="num-wrap"><span id="co-roc">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Agreements')"><span>Agreements</span> <div class="num-wrap"><span id="co-agr">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Licences')"><span>Licences</span> <div class="num-wrap"><span id="co-lic">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Renewals')"><span>Renewals</span> <div class="num-wrap"><span id="co-ren">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Payments')"><span>Payments</span> <div class="num-wrap"><span id="co-pay">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Other')"><span>Others</span> <div class="num-wrap"><span id="co-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Dashboard Table Section -->
+  <div class="dash-table-section">
+    <div class="table-header">
+      <h2>All Matters 
+        <div class="table-tabs">
+          <div class="tab active" onclick="App.renderMattersTable(null, 'All');">All (112)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Under Process');">Under Process (48)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Pending');">Pending (22)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Overdue');" style="color:var(--status-overdue)">Overdue (3)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Completed');">Completed (39)</div>
+        </div>
+      </h2>
+      <button class="btn btn-primary" onclick="App.navigateTo('matter-form')">+ Add New</button>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assigned To</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="matters-tbody">
+          <!-- JS will populate -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="quick-actions-wrap">
+    <h3>Quick Actions</h3>
+    <div class="qa-grid">
+      <button class="qa-btn qa-tm" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Trademark Application
+      </button>
+      <button class="qa-btn qa-opp" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Opposition
+      </button>
+      <button class="qa-btn qa-cp" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Copyright Application
+      </button>
+      <button class="qa-btn qa-co" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Company Task
+      </button>
+      
+      <div class="qa-promo">
+        <span class="material-symbols-outlined leaf">energy_savings_leaf</span>
+        <div class="text">Stay Organised<br>Stay Ahead</div>
+      </div>
+    </div>
+  </div>
+  
+</div>

@@ -1,0 +1,340 @@
+<!-- ROYAL MANAGER: Settings View -->
+<div id="view-settings" class="view-section">
+  
+  <div class="table-header" style="margin-bottom: 24px;">
+    <div>
+      <h2 style="font-size: 22px; color: var(--text-dark); font-weight: 700; margin: 0;">Settings & Master Data</h2>
+      <p class="text-muted" style="font-size: 13px; margin-top: 4px;">
+        Manage companies, brands, and agents individually. Saved values immediately update dropdown options across all relevant modules.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Master Data Management: 3 Separate Sections in Responsive Grid -->
+  <div class="md-sections-grid">
+    
+    <!-- 1. COMPANIES MANAGEMENT SECTION -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-company">
+            <span class="material-symbols-outlined" style="font-size: 20px;">domain</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Companies</span>
+              <span class="md-badge-count" id="badge-companies-count">0</span>
+            </div>
+            <div class="md-panel-desc">4–10 client & proprietor companies</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Company')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Company
+        </button>
+      </div>
+      
+      <div class="md-items-scrollable" id="md-companies-list" style="max-height: 380px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- 2. BRAND NAMES MANAGEMENT SECTION (Designed for large quantity & searchability) -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-brand">
+            <span class="material-symbols-outlined" style="font-size: 20px;">sell</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Brand Names</span>
+              <span class="md-badge-count" id="badge-brands-count">0</span>
+            </div>
+            <div class="md-panel-desc" id="brand-count-desc">All registered marks & brands</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Brand')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Brand
+        </button>
+      </div>
+      
+      <!-- Real-Time Search Box -->
+      <div style="margin-bottom: 12px;">
+        <div class="md-search-box" style="width: 100%; max-width: 100%;">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" id="brand-search-input" placeholder="Search brands in real-time..." oninput="App.filterBrands(this.value)">
+        </div>
+      </div>
+
+      <div class="md-items-scrollable" id="md-brands-list" style="max-height: 330px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- 3. AGENTS MANAGEMENT SECTION -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-agent">
+            <span class="material-symbols-outlined" style="font-size: 20px;">badge</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Agents</span>
+              <span class="md-badge-count" id="badge-agents-count">0</span>
+            </div>
+            <div class="md-panel-desc">2–5 legal agents & assignees</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Agent')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Agent
+        </button>
+      </div>
+
+      <div class="md-items-scrollable" id="md-agents-list" style="max-height: 380px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- 4. GOOGLE CALENDAR API SETUP & INTEGRATION SECTION -->
+  <div class="gcal-setup-wrapper" style="max-width: 720px; margin-top: 10px;">
+    
+    <!-- Connection Status Banner -->
+    <div class="gcal-status-banner" id="gcal-status-banner">
+      <div class="gcal-status-indicator">
+        <div class="gcal-status-dot" id="gcal-status-dot"></div>
+        <span class="gcal-status-text" id="gcal-status-text">Not Connected</span>
+      </div>
+      <div class="gcal-status-meta" id="gcal-status-meta">Set up your Google Calendar API to sync deadlines and reminders</div>
+    </div>
+
+    <!-- API Configuration Card -->
+    <div class="card gcal-card" style="margin-top: 16px;">
+      <div class="md-panel-header" style="margin-bottom: 20px;">
+        <div class="md-panel-title-wrap">
+          <div class="gcal-icon-wrap">
+            <span class="material-symbols-outlined" style="font-size: 22px;">key</span>
+          </div>
+          <div>
+            <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">API Configuration</h3>
+            <p class="text-muted" style="font-size: 12px; margin: 2px 0 0 0;">Enter your Google Cloud Console API credentials</p>
+          </div>
+        </div>
+        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="gcal-help-link">
+          <span class="material-symbols-outlined" style="font-size: 14px;">open_in_new</span>
+          Google Cloud Console
+        </a>
+      </div>
+
+      <!-- Setup Instructions Collapsible -->
+      <div class="gcal-instructions-toggle" onclick="App.toggleCalendarInstructions()">
+        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">help_outline</span>
+        <span style="font-size: 13px; font-weight: 500; color: var(--primary);">How to get your API credentials?</span>
+        <span class="material-symbols-outlined gcal-chevron" id="gcal-instructions-chevron" style="font-size: 18px; color: var(--text-muted); margin-left: auto;">expand_more</span>
+      </div>
+      <div class="gcal-instructions-body hidden" id="gcal-instructions-body">
+        <ol class="gcal-steps-list">
+          <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a> and create or select a project.</li>
+          <li>Navigate to <strong>APIs & Services → Library</strong> and enable the <strong>Google Calendar API</strong>.</li>
+          <li>Go to <strong>APIs & Services → Credentials</strong> and click <strong>Create Credentials → OAuth 2.0 Client ID</strong>.</li>
+          <li>Set the application type to <strong>Web application</strong>.</li>
+          <li>Add your Apps Script deployment URL as an authorized redirect URI.</li>
+          <li>Copy the <strong>Client ID</strong> and <strong>Client Secret</strong> and paste them below.</li>
+        </ol>
+      </div>
+
+      <form id="gcalApiForm" onsubmit="event.preventDefault(); App.saveGoogleCalendarApi();">
+        <div class="form-group" style="margin-top: 16px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            OAuth Client ID <span style="color: #ef4444;">*</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">fingerprint</span>
+            <input type="text" id="gcal-client-id" class="form-control gcal-input" placeholder="e.g. 123456789-xxxxx.apps.googleusercontent.com" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            OAuth Client Secret <span style="color: #ef4444;">*</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">lock</span>
+            <input type="password" id="gcal-client-secret" class="form-control gcal-input" placeholder="Enter client secret" autocomplete="new-password">
+            <button type="button" class="gcal-toggle-pass" onclick="App.toggleSecretVisibility()" title="Show/Hide">
+              <span class="material-symbols-outlined" id="gcal-eye-icon" style="font-size: 18px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            Calendar ID
+            <span class="field-hint-text" style="font-size: 11px; font-weight: 400; color: var(--text-muted);">Leave blank for primary</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">calendar_month</span>
+            <input type="text" id="gcal-calendar-id" class="form-control gcal-input" placeholder="primary (or your-calendar-id@group.calendar.google.com)">
+          </div>
+        </div>
+
+        <div class="gcal-btn-row">
+          <button type="submit" class="btn btn-primary gcal-btn-connect" id="gcal-btn-connect">
+            <span class="material-symbols-outlined" style="font-size: 18px;">link</span>
+            Connect & Authorize
+          </button>
+          <button type="button" class="btn btn-secondary gcal-btn-test" onclick="App.testCalendarConnection()" id="gcal-btn-test">
+            <span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span>
+            Test Connection
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sync Settings Card -->
+    <div class="card gcal-card" style="margin-top: 16px;">
+      <form id="calendarSettingsForm" onsubmit="event.preventDefault(); App.saveCalendarSettingsForm();">
+        <div class="md-panel-header" style="margin-bottom: 20px;">
+          <div class="md-panel-title-wrap">
+            <div class="gcal-icon-wrap gcal-icon-sync">
+              <span class="material-symbols-outlined" style="font-size: 22px;">sync</span>
+            </div>
+            <div>
+              <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Sync & Reminders</h3>
+              <p class="text-muted" style="font-size: 12px; margin: 2px 0 0 0;">Configure calendar sync behavior and deadline reminders</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto Sync Toggle -->
+        <div class="gcal-toggle-section">
+          <div class="gcal-toggle-row">
+            <div class="gcal-toggle-info">
+              <span class="material-symbols-outlined" style="font-size: 20px; color: #2563eb;">autorenew</span>
+              <div>
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--text-dark);">Auto-Sync Deadlines</div>
+                <div style="font-size: 11.5px; color: var(--text-muted);">Automatically create & update calendar events when matters change</div>
+              </div>
+            </div>
+            <label class="switch-toggle">
+              <input type="checkbox" id="gcal-auto-sync" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Sync Options Grid -->
+        <div class="gcal-options-grid">
+          <div class="form-group">
+            <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Default Calendar</label>
+            <select class="form-control" id="setting-calendar">
+              <option value="Primary Calendar">Primary Calendar</option>
+              <option value="Royal Manager Dedicated Calendar">Royal Manager Dedicated Calendar</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Sync Interval</label>
+            <select class="form-control" id="gcal-sync-interval">
+              <option value="realtime">Real-time (on save)</option>
+              <option value="hourly">Every Hour</option>
+              <option value="daily">Once a Day</option>
+              <option value="manual">Manual Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 4px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Default Reminder Days</label>
+          <input type="text" id="setting-remdays" class="form-control" value="7,3,1" placeholder="e.g. 7,3,1">
+          <small class="text-muted" style="display: block; margin-top: 4px;">Comma-separated days before deadline. e.g. <code style="background:#f1f5f9; padding:1px 5px; border-radius:3px; font-size:11px;">7,3,1</code> will remind you 7 days, 3 days, and 1 day before.</small>
+        </div>
+
+        <!-- Sync What Checkboxes -->
+        <div class="gcal-sync-what" style="margin-top: 16px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 8px; display:block;">Sync Events For</label>
+          <div class="gcal-checkbox-grid">
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-deadlines" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#ef4444;">schedule</span>
+                Matter Deadlines
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-hearings" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#8b5cf6;">gavel</span>
+                Hearings
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-renewals" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#f59e0b;">autorenew</span>
+                Renewal Dates
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-tasks">
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#10b981;">task_alt</span>
+                Tasks
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="gcal-action-footer">
+          <button type="button" class="btn gcal-btn-manual-sync" onclick="App.manualCalendarSync()">
+            <span class="material-symbols-outlined" style="font-size: 18px;">cloud_sync</span>
+            Sync Now
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined" style="font-size: 18px;">save</span>
+            Save Calendar Settings
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Last Sync Info -->
+    <div class="gcal-last-sync-bar" id="gcal-last-sync-bar">
+      <span class="material-symbols-outlined" style="font-size: 16px; color: var(--text-muted);">update</span>
+      <span class="gcal-last-sync-text" id="gcal-last-sync-text">Last sync: Never</span>
+      <span class="gcal-sync-count" id="gcal-sync-count">0 events synced</span>
+    </div>
+
+  </div>
+
+  <!-- Modal Dialog for Add/Edit Individual Master Item -->
+  <div id="md-modal" class="md-modal-overlay hidden" onclick="if(event.target === this) App.closeMasterModal();">
+    <div class="md-modal-dialog">
+      <div class="md-modal-header">
+        <div class="md-modal-title" id="md-modal-title">Add Item</div>
+        <button type="button" class="md-btn-icon" onclick="App.closeMasterModal()" title="Close">
+          <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+        </button>
+      </div>
+      <form id="md-modal-form" onsubmit="event.preventDefault(); App.saveMasterItem();">
+        <div class="md-modal-body">
+          <input type="hidden" id="md-modal-type">
+          <input type="hidden" id="md-modal-id">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="md-modal-label">Name *</label>
+            <input type="text" id="md-modal-input" class="form-control" placeholder="Enter name" required autocomplete="off">
+          </div>
+        </div>
+        <div class="md-modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeMasterModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="md-modal-save-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+

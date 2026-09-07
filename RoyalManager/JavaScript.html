@@ -1,0 +1,1475 @@
+<script>
+/* 
+ * ROYAL MANAGER
+ * Frontend Logic & Routing
+ */
+
+var App = {
+  currentView: 'dashboard',
+  matters: [],
+  tasks: [],
+  settings: {},
+  masterData: {
+    companies: [],
+    brands: [],
+    agents: []
+  },
+  currentMasterTab: 'companies',
+  brandSearchQuery: '',
+  currentMatterId: null,
+  
+  init: function() {
+    this.bindEvents();
+    this.loadSettings();
+    this.loadMasterData();
+    this.navigateTo('dashboard');
+  },
+  
+  bindEvents: function() {
+    document.querySelectorAll('[data-route]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        var route = this.getAttribute('data-route');
+        var param = this.getAttribute('data-param');
+        App.navigateTo(route, param);
+      });
+    });
+    
+    var sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('open');
+      });
+    }
+  },
+  
+  navigateTo: function(viewId, param) {
+    document.querySelectorAll('.view-section').forEach(function(el) { el.classList.remove('active'); });
+    
+    document.querySelectorAll('.nav-item').forEach(function(el) {
+      el.classList.remove('active');
+      if(el.getAttribute('data-route') === viewId && !el.classList.contains('sub-item')) {
+        el.classList.add('active');
+      }
+    });
+    
+    var viewEl = document.getElementById('view-' + viewId);
+    if (viewEl) viewEl.classList.add('active');
+    
+    this.currentView = viewId;
+    
+    if (viewId === 'dashboard') this.loadDashboard();
+    else if (viewId === 'matters') this.loadMatters(param);
+    else if (viewId === 'matter-form') this.loadMatterForm(param);
+    else if (viewId === 'matter-details') this.loadMatterDetails(param);
+    else if (viewId === 'tasks') this.loadTasks();
+    else if (viewId === 'settings') {
+      this.loadSettings();
+      this.loadMasterData();
+    }
+    
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  },
+  
+  showLoading: function() { document.getElementById('loading-overlay').classList.remove('hidden'); },
+  hideLoading: function() { document.getElementById('loading-overlay').classList.add('hidden'); },
+  
+  showToast: function(message, isError) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.backgroundColor = isError ? '#dc2626' : '#059669';
+    toast.classList.remove('hidden');
+    setTimeout(function() { toast.classList.add('hidden'); }, 3000);
+  },
+  
+  // --- Dashboard ---
+  loadDashboard: function() {
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function(data) {
+        document.getElementById('dash-total').textContent = data.top.total;
+        document.getElementById('dash-process').textContent = data.top.underProcess;
+        document.getElementById('dash-pending').textContent = data.top.pending;
+        document.getElementById('dash-overdue').textContent = data.top.overdue;
+        document.getElementById('dash-completed').textContent = data.top.completed;
+        
+        document.getElementById('tm-total').textContent = data.trademark.total;
+        if (document.getElementById('tm-reg')) document.getElementById('tm-reg').textContent = data.trademark.registration || 0;
+        document.getElementById('tm-new').textContent = data.trademark.newApp;
+        document.getElementById('tm-opp').textContent = data.trademark.opposition;
+        document.getElementById('tm-rect').textContent = data.trademark.rectification;
+        document.getElementById('tm-ren').textContent = data.trademark.renewal;
+        document.getElementById('tm-hear').textContent = data.trademark.hearing;
+        document.getElementById('tm-other').textContent = data.trademark.other;
+        
+        document.getElementById('cp-total').textContent = data.copyright.total;
+        if (document.getElementById('cp-reg')) document.getElementById('cp-reg').textContent = data.copyright.registration || 0;
+        if (document.getElementById('cp-app-total')) document.getElementById('cp-app-total').textContent = data.copyright.totalApp || data.copyright.newApp || 0;
+        document.getElementById('cp-new').textContent = data.copyright.newApp;
+        document.getElementById('cp-obj').textContent = data.copyright.objection;
+        document.getElementById('cp-hear').textContent = data.copyright.hearing;
+        document.getElementById('cp-other').textContent = data.copyright.other;
+        
+        document.getElementById('co-total').textContent = data.company.total;
+        document.getElementById('co-roc').textContent = data.company.compliance;
+        document.getElementById('co-agr').textContent = data.company.agreements;
+        document.getElementById('co-lic').textContent = data.company.licences;
+        document.getElementById('co-ren').textContent = data.company.renewals;
+        document.getElementById('co-pay').textContent = data.company.payments;
+        document.getElementById('co-other').textContent = data.company.other;
+        
+        // Auto load matters for dashboard table
+        App.loadMatters('All', true); 
+      })
+      .withFailureHandler(function(err) {
+        App.hideLoading();
+        App.showToast("Error loading dashboard", true);
+      })
+      .getDashboardData();
+  },
+  
+  // --- Matters ---
+  loadMatters: function(filterParam, isSilentLoad) {
+    if(!isSilentLoad) this.showLoading();
+    
+    var categoryFilter = null;
+    var typeFilter = null;
+    var statusFilter = 'All';
+    
+    if(filterParam && filterParam !== 'All') {
+      if(filterParam.includes('-')) {
+        var parts = filterParam.split('-');
+        categoryFilter = parts[0].trim();
+        typeFilter = parts.slice(1).join('-').trim();
+      } else {
+        categoryFilter = filterParam.trim();
+      }
+    }
+    
+    google.script.run
+      .withSuccessHandler(function(matters) {
+        App.matters = matters;
+        App.renderMattersTable(categoryFilter, statusFilter, typeFilter);
+        App.hideLoading(); // Always hide when done, regardless of who initiated
+      })
+      .withFailureHandler(function(err) {
+        App.hideLoading();
+        App.showToast("Error loading matters", true);
+      })
+      .getAllMatters();
+  },
+  
+  applyStandardSearch: function(query) {
+    window.currentSearchQuery = (query || '').trim();
+    this.renderMattersTable();
+  },
+  
+  applyRegFilters: function() {
+    this.renderMattersTable();
+  },
+  
+  resetRegFilters: function(type) {
+    if (type === 'TM') {
+      var c = document.getElementById('tm-filt-company'); if (c) c.value = '';
+      var cl = document.getElementById('tm-filt-class'); if (cl) cl.value = '';
+    } else if (type === 'CP') {
+      var c = document.getElementById('cp-filt-company'); if (c) c.value = '';
+    }
+    this.renderMattersTable();
+  },
+  
+  renderMattersTable: function(categoryFilter, statusFilter, typeFilter) {
+    if (categoryFilter !== undefined) window.currentCategoryFilter = categoryFilter;
+    if (statusFilter !== undefined) window.currentStatusFilter = statusFilter;
+    if (typeFilter !== undefined) window.currentTypeFilter = typeFilter;
+    
+    var cat = window.currentCategoryFilter;
+    var stat = window.currentStatusFilter || 'All';
+    var typ = window.currentTypeFilter;
+    
+    var isTMReg = (cat === 'Trademark' && (typ === 'Active' || typ === 'Active Trademarks' || typ === 'Registration' || typ === 'Total TM Registration'));
+    var isCPReg = (cat === 'Copyright' && (typ === 'Active' || typ === 'Active Copyrights' || typ === 'Registration' || typ === 'Total Copyright Registration'));
+    
+    // 1. Update Title and Subtitle - "Registration" removed from titles
+    var titleEl = document.getElementById('matters-page-title');
+    var subtitleEl = document.getElementById('matters-page-subtitle');
+    if (titleEl) {
+      if (isTMReg) {
+        titleEl.textContent = 'Active Trademarks';
+        if (subtitleEl) subtitleEl.textContent = 'Registered Trademarks';
+      } else if (isCPReg) {
+        titleEl.textContent = 'Active Copyrights';
+        if (subtitleEl) subtitleEl.textContent = 'Registered Copyrights';
+      } else if (cat && typ) {
+        titleEl.textContent = cat + ' - ' + typ;
+        if (subtitleEl) subtitleEl.textContent = 'Filtered records for ' + cat + ' (' + typ + ')';
+      } else if (cat) {
+        titleEl.textContent = cat + ' Matters';
+        if (subtitleEl) subtitleEl.textContent = 'All matters under ' + cat;
+      } else {
+        titleEl.textContent = 'All Matters';
+        if (subtitleEl) subtitleEl.textContent = 'All active & closed legal and company tasks';
+      }
+    }
+    
+    // 2. Toggle UI filter sections
+    var tmFilterBox = document.getElementById('tm-reg-filters');
+    var cpFilterBox = document.getElementById('cp-reg-filters');
+    var standardSearchWrap = document.getElementById('standard-search-wrap');
+    var standardTabsWrap = document.getElementById('standard-tabs-wrap');
+    
+    if (tmFilterBox) tmFilterBox.classList.toggle('hidden', !isTMReg);
+    if (cpFilterBox) cpFilterBox.classList.toggle('hidden', !isCPReg);
+    if (standardSearchWrap) standardSearchWrap.classList.toggle('hidden', isTMReg || isCPReg);
+    if (standardTabsWrap) standardTabsWrap.classList.toggle('hidden', isTMReg || isCPReg);
+    
+    // Hide Completed/Overdue tabs for New Application
+    var isTMNewApp = (cat === 'Trademark' && (typ === 'New Application' || typ === 'New Applications'));
+    var tabOverdue = document.getElementById('tab-overdue');
+    var tabCompleted = document.getElementById('tab-completed');
+    if (tabOverdue) tabOverdue.classList.toggle('hidden', isTMNewApp);
+    if (tabCompleted) tabCompleted.classList.toggle('hidden', isTMNewApp);
+    
+    // 3. Update active tab styling on standard views
+    document.querySelectorAll('.table-tabs .tab').forEach(function(el) {
+      el.classList.remove('active');
+      if (el.innerText.includes(stat)) el.classList.add('active');
+    });
+    
+    // 4. Update thead columns for MatterList page
+    var theadPage = document.getElementById('matters-page-thead');
+    if (theadPage) {
+      if (isTMReg) {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Trademark / Matter Name</th>
+            <th>Mark Type</th>
+            <th>Application No.</th>
+            <th>Class</th>
+            <th>Company</th>
+            <th>Renewal Due Date</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      } else if (isCPReg) {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Copyright / Work Name</th>
+            <th>Application No.</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      } else {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      }
+    }
+    
+    // 5. Populate dropdown options for Company and Class
+    if (isTMReg) {
+      var allRegTM = this.matters.filter(function(m) {
+        var c = (m.Category || '').trim();
+        var s = (m.Status || '').trim().toLowerCase();
+        var ds = (m._displayStatus || '').trim().toLowerCase();
+        return c === 'Trademark' && (s === 'registered' || ds === 'registered');
+      });
+      
+      var compSelect = document.getElementById('tm-filt-company');
+      if (compSelect) {
+        var curComp = compSelect.value;
+        var companies = [];
+        allRegTM.forEach(function(m) {
+          var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (comp && companies.indexOf(comp) === -1) companies.push(comp);
+        });
+        companies.sort();
+        var compHtml = '<option value="">All Companies</option>';
+        companies.forEach(function(c) {
+          compHtml += '<option value="' + c + '"' + (c === curComp ? ' selected' : '') + '>' + c + '</option>';
+        });
+        compSelect.innerHTML = compHtml;
+      }
+      
+      var classSelect = document.getElementById('tm-filt-class');
+      if (classSelect) {
+        var curClass = classSelect.value;
+        var classes = [];
+        allRegTM.forEach(function(m) {
+          var k = (m['Class'] || '').trim();
+          if (k && classes.indexOf(k) === -1) classes.push(k);
+        });
+        classes.sort();
+        var classHtml = '<option value="">All Classes</option>';
+        classes.forEach(function(cl) {
+          classHtml += '<option value="' + cl + '"' + (cl === curClass ? ' selected' : '') + '>' + cl + '</option>';
+        });
+        classSelect.innerHTML = classHtml;
+      }
+    }
+    
+    if (isCPReg) {
+      var allRegCP = this.matters.filter(function(m) {
+        var c = (m.Category || '').trim();
+        var s = (m.Status || '').trim().toLowerCase();
+        var ds = (m._displayStatus || '').trim().toLowerCase();
+        return c === 'Copyright' && (s === 'registered' || ds === 'registered');
+      });
+      
+      var cpCompSelect = document.getElementById('cp-filt-company');
+      if (cpCompSelect) {
+        var curCpComp = cpCompSelect.value;
+        var cpCompanies = [];
+        allRegCP.forEach(function(m) {
+          var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (comp && cpCompanies.indexOf(comp) === -1) cpCompanies.push(comp);
+        });
+        cpCompanies.sort();
+        var cpCompHtml = '<option value="">All Companies</option>';
+        cpCompanies.forEach(function(c) {
+          cpCompHtml += '<option value="' + c + '"' + (c === curCpComp ? ' selected' : '') + '>' + c + '</option>';
+        });
+        cpCompSelect.innerHTML = cpCompHtml;
+      }
+    }
+    
+    var selTMCompany = (document.getElementById('tm-filt-company') ? document.getElementById('tm-filt-company').value.trim() : '');
+    var selTMClass = (document.getElementById('tm-filt-class') ? document.getElementById('tm-filt-class').value.trim() : '');
+    var selCPCompany = (document.getElementById('cp-filt-company') ? document.getElementById('cp-filt-company').value.trim() : '');
+    var searchQ = (window.currentSearchQuery || '').toLowerCase();
+
+    // 6. Filter items with strict rules
+    var filtered = this.matters.filter(function(m) {
+      var mStatus = (m.Status || '').trim();
+      var mDispStatus = (m._displayStatus || mStatus).trim();
+      var mStatusLower = mStatus.toLowerCase();
+      var mDispLower = mDispStatus.toLowerCase();
+      var mCategory = (m.Category || '').trim();
+      var mType = (m.Type || '').trim();
+      var mTypeLower = mType.toLowerCase();
+
+      // Case A: Active Trademarks (Only Registered Trademarks)
+      if (isTMReg) {
+        if (mCategory !== 'Trademark') return false;
+        // Strictly show only Registered trademarks
+        if (mStatusLower !== 'registered' && mDispLower !== 'registered') return false;
+        
+        // Filter by Company dropdown
+        if (selTMCompany) {
+          var mOwner = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (mOwner !== selTMCompany) return false;
+        }
+        
+        // Filter by Class dropdown
+        if (selTMClass) {
+          var mClass = (m['Class'] || '').trim();
+          if (mClass !== selTMClass) return false;
+        }
+        
+        return true;
+      }
+      
+      // Case B: Active Copyrights (Only Registered Copyrights)
+      if (isCPReg) {
+        if (mCategory !== 'Copyright') return false;
+        // Strictly show only Registered copyrights
+        if (mStatusLower !== 'registered' && mDispLower !== 'registered') return false;
+        
+        // Filter by Company dropdown
+        if (selCPCompany) {
+          var mOwner = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (mOwner !== selCPCompany) return false;
+        }
+        
+        return true;
+      }
+
+      // Case C: Standard Sub-Module or Category View (Strict Filtering)
+      // Category Match
+      var catMatch = cat ? (mCategory === cat) : true;
+      
+      // Sub-module / Type Match: EXACT match so Trademark -> New Application NEVER displays Opposition, Hearing, etc.
+      var typeMatch = true;
+      if (typ) {
+        var fTypeLower = typ.toLowerCase();
+        typeMatch = (mTypeLower === fTypeLower || mTypeLower.replace(/s$/, '') === fTypeLower.replace(/s$/, ''));
+      }
+      
+      // Status Tab Match
+      var statMatch = (stat && stat !== 'All') ? (mDispStatus === stat || mStatus === stat) : true;
+      
+      // Standard search query
+      var searchMatch = true;
+      if (searchQ) {
+        var blob = (m['Matter Name'] + ' ' + (m['Application / Case No.'] || '') + ' ' + (m['Registration No.'] || '') + ' ' + mCategory + ' ' + mType).toLowerCase();
+        searchMatch = blob.includes(searchQ);
+      }
+      
+      return catMatch && typeMatch && statMatch && searchMatch;
+    });
+    
+    // 7. Render Rows
+    var pageHtml = '';
+    var dashHtml = '';
+    
+    if (filtered.length === 0) {
+      var colSpan = isTMReg ? 9 : (isCPReg ? 6 : 7);
+      pageHtml = `<tr><td colspan="${colSpan}" style="text-align:center; padding:32px; color:var(--text-muted);">No records found matching the specified criteria.</td></tr>`;
+      dashHtml = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">No matters found.</td></tr>`;
+    } else {
+      filtered.forEach(function(m) {
+        var statusClass = 'bg-gray';
+        var dispStat = m._displayStatus || m.Status;
+        if (dispStat === 'Pending') statusClass = 'bg-yellow';
+        if (dispStat === 'Under Process') statusClass = 'bg-blue';
+        if (dispStat === 'Overdue') statusClass = 'bg-red';
+        if (dispStat === 'Completed' || dispStat === 'Registered' || dispStat === 'Active') statusClass = 'bg-green text-green';
+        
+        var prioClass = 'bg-gray';
+        if (m.Priority === 'High') prioClass = 'bg-red text-red';
+        if (m.Priority === 'Medium') prioClass = 'bg-yellow text-yellow';
+        
+        var daysLeftHtml = '';
+        if (m._daysLeft !== null && m._daysLeft >= 0) {
+          if (m._daysLeft === 0) daysLeftHtml = ' <span style="color:#d97706">(Today)</span>';
+          else if (m._daysLeft === 1) daysLeftHtml = ' <span style="color:#d97706">(Tomorrow)</span>';
+        }
+        
+        var typeStyle = '';
+        if (m.Type === 'Opposition') typeStyle = 'class="text-red"';
+        else if (m.Type === 'New Application') typeStyle = 'class="text-blue"';
+        else if (m.Type === 'Rectification') typeStyle = 'class="text-purple"';
+        else if (m.Type === 'Company' || m.Type === 'Compliance / ROC') typeStyle = 'class="text-green"';
+        else if (m.Type === 'Copyright') typeStyle = 'class="text-purple"';
+
+        // Custom columns for TM Registration:
+        // Matter Name | Reg No | App No | Class | Proprietor | Reg Date | Renewal Due Date | Status | Actions
+        if (isTMReg) {
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'edit') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td><strong>${m['Matter Name']}</strong></td>
+              <td>${m['Mark Type'] || 'Word Mark'}</td>
+              <td>${m['Application / Case No.'] || '-'}</td>
+              <td><span class="badge bg-gray">${m['Class'] || 'Class 35'}</span></td>
+              <td>${m['Proprietor / Owner'] || m['Client / Company'] || '-'}</td>
+              <td>${formatDateJS(m['Renewal Due Date'] || m['Next Date'])}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">Edit</button>
+              </td>
+            </tr>
+          `;
+        } 
+        // Custom columns for Copyright Registration:
+        // Work Name | Reg No | App No | Owner | Reg Date | Status | Actions
+        else if (isCPReg) {
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'edit') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td><strong>${m['Matter Name']}</strong></td>
+              <td>${m['Application / Case No.'] || '-'}</td>
+              <td>${m['Proprietor / Owner'] || m['Client / Company'] || '-'}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">Edit</button>
+              </td>
+            </tr>
+          `;
+        } 
+        // Standard Matters columns
+        else {
+          var isTMNewApp = (m.Category === 'Trademark' && (m.Type === 'New Application' || m.Type === 'New Applications'));
+          
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && event.target.innerText !== 'more_vert') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td>
+                <strong>${m['Matter Name']}</strong><br>
+                <span class="text-muted">App No. ${m['Application / Case No.'] || '-'}</span>
+              </td>
+              <td><span ${typeStyle}>${m.Type || '-'}</span></td>
+              <td>${m['Next Action'] || '-'}</td>
+              <td>${formatDateJS(m['Next Date'])}${daysLeftHtml}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                ${isTMNewApp ? `
+                  <select onchange="App.handleNewAppAction('${m.ID}', this.value); this.value='';" onclick="event.stopPropagation()" style="padding:4px; font-size:12px; border-radius:4px; border:1px solid #ddd; background:white;">
+                    <option value="">Action</option>
+                    <option value="mark_registered">Mark as Registered</option>
+                    <option value="mark_done">Mark as Done</option>
+                    <option value="edit">Edit</option>
+                  </select>
+                ` : `
+                  <span class="material-symbols-outlined dots-menu" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">more_vert</span>
+                `}
+              </td>
+            </tr>
+          `;
+        }
+
+        // Dashboard table always gets the standard view
+        dashHtml += `
+          <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'more_vert') App.navigateTo('matter-details', '${m.ID}')">
+            <td><input type="checkbox"></td>
+            <td>
+              <strong>${m['Matter Name']}</strong><br>
+              <span class="text-muted">App No. ${m['Application / Case No.'] || '-'}</span>
+            </td>
+            <td><span ${typeStyle}>${m.Type || '-'}</span></td>
+            <td>${m['Next Action'] || '-'}</td>
+            <td>${formatDateJS(m['Next Date'])}${daysLeftHtml}</td>
+            <td><span class="badge ${statusClass}">${dispStat}</span></td>
+            <td style="text-align:right;">
+              <span class="material-symbols-outlined dots-menu" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">more_vert</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+    
+    var tbodyPage = document.getElementById('matters-page-tbody');
+    var tbodyDash = document.getElementById('matters-tbody');
+    if (tbodyPage) tbodyPage.innerHTML = pageHtml;
+    if (tbodyDash) tbodyDash.innerHTML = dashHtml;
+  },
+  
+  loadMatterForm: function(id) {
+    var form = document.getElementById('matterForm');
+    if (!form) return;
+    form.reset();
+    document.getElementById('matter-id').value = '';
+    
+    // Populate dropdowns from Master Data
+    App.updateModuleDropdowns();
+
+    var titleEl = document.getElementById('matter-form-title');
+    var badgeEl = document.getElementById('matter-form-badge');
+    var subEl = document.getElementById('matter-form-subtitle');
+    if (titleEl) titleEl.innerText = id ? 'Edit Matter Details' : 'New Matter Registration';
+    if (badgeEl) {
+      badgeEl.innerText = id ? 'Editing Mode' : 'New Entry';
+      badgeEl.style.background = id ? '#fef3c7' : '#e0f2fe';
+      badgeEl.style.color = id ? '#d97706' : '#0284c7';
+    }
+    if (subEl) subEl.innerText = id ? 'Modify specifications, update task status, and synchronize statutory deadlines.' : 'Register and manage intellectual property, track critical deadlines, and configure reminders.';
+
+    setTimeout(function() { App.toggleMatterFields(); }, 0);
+    
+    if (id) {
+      this.showLoading();
+      google.script.run
+        .withSuccessHandler(function(m) {
+          if (m) {
+            document.getElementById('matter-id').value = m.ID;
+            if (titleEl) titleEl.innerText = 'Edit: ' + (m['Matter Name'] || 'Matter #' + m.ID);
+            
+            var brandVal = m['Brand Name'] || m['Matter Name'] || '';
+            var matterNameVal = m['Matter Name'] || brandVal || '';
+            if (document.getElementById('f-name')) document.getElementById('f-name').value = matterNameVal;
+            if (document.getElementById('f-appno')) document.getElementById('f-appno').value = m['Application / Case No.'] || m['Registration No.'] || '';
+            if (document.getElementById('f-class')) document.getElementById('f-class').value = m['Class'] || '';
+            
+            if (document.getElementById('f-regdate')) {
+              var rd = m['Registration Date'] ? new Date(m['Registration Date']) : null;
+              if (rd && !isNaN(rd.getTime())) document.getElementById('f-regdate').value = rd.toISOString().split('T')[0];
+            }
+            if (document.getElementById('f-renewdate')) {
+              var rwd = m['Renewal Due Date'] ? new Date(m['Renewal Due Date']) : null;
+              if (rwd && !isNaN(rwd.getTime())) document.getElementById('f-renewdate').value = rwd.toISOString().split('T')[0];
+            }
+
+            document.getElementById('f-category').value = m.Category || 'Trademark';
+            document.getElementById('f-type').value = m.Type || '';
+            document.getElementById('f-status').value = m.Status || 'Pending';
+            
+            // Set Dropdown Values
+            var compVal = m['Company Name'] || m['Proprietor / Owner'] || m['Client / Company'] || '';
+            var agentVal = m['Agent Name'] || '';
+            
+            App.setDropdownValueOrAdd('f-company', compVal);
+            App.setDropdownValueOrAdd('f-agent', agentVal);
+            App.setDropdownValueOrAdd('f-brand', brandVal);
+            document.getElementById('f-nextaction').value = m['Next Action'] || '';
+            
+            var d = m['Next Date'] ? new Date(m['Next Date']) : null;
+            if(d && !isNaN(d.getTime())) {
+              document.getElementById('f-nextdate').value = d.toISOString().split('T')[0];
+            }
+            
+            document.getElementById('f-reminder').checked = (m['Reminder Enabled'] === 'Yes');
+            document.getElementById('f-remdays').value = m['Reminder Days'] || '7,3,1';
+            App.toggleMatterFields();
+          }
+          App.hideLoading();
+        })
+        .withFailureHandler(function() {
+          App.hideLoading();
+          App.showToast("Error loading matter details", true);
+        })
+        .getMatterById(id);
+    }
+  },
+  
+
+  handleNewAppAction: function(id, action) {
+    if (!action) return;
+    var matter = this.matters.find(function(m) { return m.ID == id; });
+    if (!matter) return;
+    
+    if (action === 'edit') {
+      this.navigateTo('matter-form', id);
+    } else if (action === 'mark_registered') {
+      matter.Status = 'Registered';
+      matter.Type = 'Registration';
+      matter._displayStatus = 'Registered';
+      this.showToast(matter['Matter Name'] + " marked as Registered and moved to Active Trademarks!");
+      this.renderMattersTable(window.currentCategoryFilter, window.currentStatusFilter);
+    } else if (action === 'mark_done') {
+      matter.Status = 'Completed';
+      matter._displayStatus = 'Completed';
+      this.showToast(matter['Matter Name'] + " marked as Done.");
+      this.renderMattersTable(window.currentCategoryFilter, window.currentStatusFilter);
+    }
+  },
+
+  toggleMatterFields: function() {
+    var cat = document.getElementById('f-category');
+    if (!cat) return;
+    var category = cat.value;
+    
+    var brandGrp = document.getElementById('group-brand');
+    var matterNameGrp = document.getElementById('group-matter-name');
+    var labelMatterName = document.getElementById('label-matter-name');
+    var agentGrp = document.getElementById('group-agent');
+    var classGrp = document.getElementById('group-class');
+    var compGrp = document.getElementById('group-company');
+    var regDateGrp = document.getElementById('group-regdate');
+    var renewDateGrp = document.getElementById('group-renewdate');
+    var labelAppNo = document.getElementById('label-appno');
+    
+    // Reset displays
+    if (brandGrp) brandGrp.style.display = 'none';
+    if (matterNameGrp) matterNameGrp.style.display = 'none';
+    if (agentGrp) agentGrp.style.display = 'none';
+    if (classGrp) classGrp.style.display = 'none';
+    if (compGrp) compGrp.style.display = 'none';
+    if (regDateGrp) regDateGrp.style.display = 'none';
+    if (renewDateGrp) renewDateGrp.style.display = 'none';
+    
+    if (category === 'Trademark') {
+      if (brandGrp) brandGrp.style.display = 'block';
+      if (agentGrp) agentGrp.style.display = 'block';
+      if (classGrp) classGrp.style.display = 'block';
+      if (compGrp) compGrp.style.display = 'block';
+      if (regDateGrp) regDateGrp.style.display = 'block';
+      if (renewDateGrp) renewDateGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Reg / Application No.';
+    } else if (category === 'Copyright') {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Work / Matter Title <span class="req">*</span>';
+      }
+      if (agentGrp) agentGrp.style.display = 'block';
+      if (compGrp) compGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Reg / Application No.';
+    } else if (category === 'Company Tasks') {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Task / Matter Title <span class="req">*</span>';
+      }
+      if (compGrp) compGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Filing / Reference No.';
+    } else {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Task Title <span class="req">*</span>';
+      }
+      if (labelAppNo) labelAppNo.innerText = 'Reference No.';
+    }
+  },
+  
+  populateDropdown: function(id, itemsOrString, defaultLabel) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var curVal = sel.value;
+    var label = defaultLabel || '-- Select --';
+    sel.innerHTML = '<option value="">' + label + '</option>';
+    if (!itemsOrString) return;
+    
+    var list = [];
+    if (typeof itemsOrString === 'string') {
+      list = itemsOrString.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    } else if (Array.isArray(itemsOrString)) {
+      list = itemsOrString.map(function(it) {
+        return (typeof it === 'object' && it !== null) ? (it.value || it.name || '') : String(it);
+      }).filter(Boolean);
+    }
+    
+    list.forEach(function(item) {
+      var opt = document.createElement('option');
+      opt.value = item;
+      opt.textContent = item;
+      if (item === curVal) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  },
+
+  setDropdownValueOrAdd: function(id, val) {
+    var sel = document.getElementById(id);
+    if (!sel || !val) return;
+    var found = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === val) {
+        sel.selectedIndex = i;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      var opt = document.createElement('option');
+      opt.value = val;
+      opt.textContent = val;
+      opt.selected = true;
+      sel.appendChild(opt);
+    }
+  },
+
+  updateModuleDropdowns: function() {
+    // 1. Matter Form fields
+    this.populateDropdown('f-company', this.masterData.companies, '-- Select Company --');
+    this.populateDropdown('f-brand', this.masterData.brands, '-- Select Brand --');
+    this.populateDropdown('f-agent', this.masterData.agents, '-- Select Agent --');
+    
+
+
+    // 4. Matter Filter Dropdowns (Active Trademarks & Active Copyrights)
+    var tmCompSel = document.getElementById('tm-filt-company');
+    if (tmCompSel) {
+      var curTm = tmCompSel.value;
+      var tmCompanies = [];
+      (this.masterData.companies || []).forEach(function(c) {
+        var v = (typeof c === 'object' ? c.value : c).trim();
+        if (v && tmCompanies.indexOf(v) === -1) tmCompanies.push(v);
+      });
+      (this.matters || []).forEach(function(m) {
+        var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+        if (comp && tmCompanies.indexOf(comp) === -1) tmCompanies.push(comp);
+      });
+      tmCompanies.sort();
+      var tmHtml = '<option value="">All Companies</option>';
+      tmCompanies.forEach(function(c) {
+        tmHtml += '<option value="' + escapeHtml(c) + '"' + (c === curTm ? ' selected' : '') + '>' + escapeHtml(c) + '</option>';
+      });
+      tmCompSel.innerHTML = tmHtml;
+    }
+
+    var cpCompSel = document.getElementById('cp-filt-company');
+    if (cpCompSel) {
+      var curCp = cpCompSel.value;
+      var cpCompanies = [];
+      (this.masterData.companies || []).forEach(function(c) {
+        var v = (typeof c === 'object' ? c.value : c).trim();
+        if (v && cpCompanies.indexOf(v) === -1) cpCompanies.push(v);
+      });
+      (this.matters || []).forEach(function(m) {
+        var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+        if (comp && cpCompanies.indexOf(comp) === -1) cpCompanies.push(comp);
+      });
+      cpCompanies.sort();
+      var cpHtml = '<option value="">All Companies</option>';
+      cpCompanies.forEach(function(c) {
+        cpHtml += '<option value="' + escapeHtml(c) + '"' + (c === curCp ? ' selected' : '') + '>' + escapeHtml(c) + '</option>';
+      });
+      cpCompSel.innerHTML = cpHtml;
+    }
+  },
+
+  // --- Master Data Management ---
+  loadMasterData: function(callback) {
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (data) {
+          self.masterData = {
+            companies: data.companies || [],
+            brands: data.brands || [],
+            agents: data.agents || []
+          };
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          if (callback) callback();
+        }
+      })
+      .withFailureHandler(function(err) {
+        console.error("Failed to load master data:", err);
+      })
+      .getMasterData();
+  },
+
+  switchMasterTab: function(tab) {
+    this.currentMasterTab = tab;
+    ['companies', 'brands', 'agents'].forEach(function(t) {
+      var tabBtn = document.getElementById('tab-' + t);
+      var panel = document.getElementById('panel-' + t);
+      if (tabBtn) tabBtn.classList.toggle('active', t === tab);
+      if (panel) panel.classList.toggle('active', t === tab);
+    });
+  },
+
+  filterBrands: function(query) {
+    this.brandSearchQuery = (query || '').toLowerCase().trim();
+    this.renderBrandsList();
+  },
+
+  renderMasterData: function() {
+    var coCount = (this.masterData.companies || []).length;
+    var brCount = (this.masterData.brands || []).length;
+    var agCount = (this.masterData.agents || []).length;
+    
+    var elCo = document.getElementById('badge-companies-count');
+    var elBr = document.getElementById('badge-brands-count');
+    var elAg = document.getElementById('badge-agents-count');
+    if (elCo) elCo.innerText = coCount;
+    if (elBr) elBr.innerText = brCount;
+    if (elAg) elAg.innerText = agCount;
+
+    this.renderCompaniesList();
+    this.renderBrandsList();
+    this.renderAgentsList();
+  },
+
+  renderCompaniesList: function() {
+    var container = document.getElementById('md-companies-list');
+    if (!container) return;
+    var items = this.masterData.companies || [];
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">business</span>
+          <p>No companies found. Click <strong>+ Add Company</strong> to add your first company.</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    items.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-company">
+              <span class="material-symbols-outlined" style="font-size:18px;">business</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Company" onclick="App.openMasterModal('Company', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Company" onclick="App.deleteMasterItem('Company', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  renderBrandsList: function() {
+    var container = document.getElementById('md-brands-list');
+    if (!container) return;
+    var allBrands = this.masterData.brands || [];
+    var q = this.brandSearchQuery;
+    var filtered = q ? allBrands.filter(function(b) { return (b.value || '').toLowerCase().includes(q); }) : allBrands;
+    
+    var descEl = document.getElementById('brand-count-desc');
+    if (descEl) {
+      descEl.innerText = q ? ('Showing ' + filtered.length + ' of ' + allBrands.length + ' brands') : (allBrands.length + ' registered brands');
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">label</span>
+          <p>${q ? 'No brands matching "' + escapeHtml(q) + '".' : 'No brands found. Click <strong>+ Add Brand</strong> to add your first brand.'}</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    filtered.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-brand">
+              <span class="material-symbols-outlined" style="font-size:18px;">label</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Brand" onclick="App.openMasterModal('Brand', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Brand" onclick="App.deleteMasterItem('Brand', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  renderAgentsList: function() {
+    var container = document.getElementById('md-agents-list');
+    if (!container) return;
+    var items = this.masterData.agents || [];
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">support_agent</span>
+          <p>No agents found. Click <strong>+ Add Agent</strong> to add your first agent.</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    items.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-agent">
+              <span class="material-symbols-outlined" style="font-size:18px;">support_agent</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Agent" onclick="App.openMasterModal('Agent', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Agent" onclick="App.deleteMasterItem('Agent', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  openMasterModal: function(type, id, currentValue) {
+    var isEdit = !!id;
+    var modal = document.getElementById('md-modal');
+    if (!modal) return;
+    
+    document.getElementById('md-modal-title').innerText = isEdit ? ('Edit ' + type) : ('Add ' + type);
+    document.getElementById('md-modal-label').innerText = type + ' Name *';
+    document.getElementById('md-modal-type').value = type;
+    document.getElementById('md-modal-id').value = id || '';
+    
+    var input = document.getElementById('md-modal-input');
+    input.placeholder = 'Enter ' + type.toLowerCase() + ' name...';
+    input.value = currentValue ? currentValue.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'") : '';
+    
+    modal.classList.remove('hidden');
+    setTimeout(function() { input.focus(); }, 50);
+  },
+
+  closeMasterModal: function() {
+    var modal = document.getElementById('md-modal');
+    if (modal) modal.classList.add('hidden');
+    var form = document.getElementById('md-modal-form');
+    if (form) form.reset();
+  },
+
+  saveMasterItem: function() {
+    var type = document.getElementById('md-modal-type').value;
+    var id = document.getElementById('md-modal-id').value;
+    var val = document.getElementById('md-modal-input').value.trim();
+    if (!val) {
+      App.showToast("Please enter a name.", true);
+      return;
+    }
+    
+    var listKey = (type === 'Company') ? 'companies' : ((type === 'Brand') ? 'brands' : 'agents');
+    var self = this;
+    this.showLoading();
+    
+    if (id) {
+      // Edit
+      google.script.run
+        .withSuccessHandler(function(res) {
+          self.hideLoading();
+          var it = (self.masterData[listKey] || []).find(function(x) { return x.id === id; });
+          if (it) it.value = val;
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          self.closeMasterModal();
+          self.showToast(type + " updated successfully!");
+        })
+        .withFailureHandler(function(err) {
+          self.hideLoading();
+          self.showToast("Failed to update " + type.toLowerCase() + ".", true);
+        })
+        .updateMasterDataItem(id, val);
+    } else {
+      // Add
+      google.script.run
+        .withSuccessHandler(function(res) {
+          self.hideLoading();
+          var newItem = (res && res.item) ? res.item : { id: type.toLowerCase() + '_' + Date.now(), value: val };
+          if (!self.masterData[listKey]) self.masterData[listKey] = [];
+          self.masterData[listKey].push(newItem);
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          self.closeMasterModal();
+          self.showToast(type + " added successfully!");
+        })
+        .withFailureHandler(function(err) {
+          self.hideLoading();
+          self.showToast("Failed to add " + type.toLowerCase() + ".", true);
+        })
+        .addMasterDataItem(type, val);
+    }
+  },
+
+  deleteMasterItem: function(type, id, name) {
+    var decodedName = name.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    if (!confirm("Are you sure you want to delete " + type + " '" + decodedName + "'?")) {
+      return;
+    }
+    
+    var listKey = (type === 'Company') ? 'companies' : ((type === 'Brand') ? 'brands' : 'agents');
+    var self = this;
+    this.showLoading();
+    
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.masterData[listKey] = (self.masterData[listKey] || []).filter(function(x) { return x.id !== id; });
+        self.renderMasterData();
+        self.updateModuleDropdowns();
+        self.showToast(type + " deleted successfully.");
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to delete " + type.toLowerCase() + ".", true);
+      })
+      .deleteMasterDataItem(id);
+  },
+
+  // --- Calendar Settings & Google Calendar API Setup ---
+  loadSettings: function() {
+    google.script.run
+      .withSuccessHandler(function(s) {
+        if(s) {
+          App.settings = s;
+          if (document.getElementById('setting-calendar')) {
+            document.getElementById('setting-calendar').value = s.default_calendar || s.calendar || 'Primary Calendar';
+          }
+          if (document.getElementById('setting-remdays')) {
+            document.getElementById('setting-remdays').value = s.default_remdays || s.reminder_days || '7,3,1';
+          }
+          // Google Calendar API fields
+          if (document.getElementById('gcal-client-id')) {
+            document.getElementById('gcal-client-id').value = s.gcal_client_id || '';
+          }
+          if (document.getElementById('gcal-client-secret')) {
+            document.getElementById('gcal-client-secret').value = s.gcal_client_secret || '';
+          }
+          if (document.getElementById('gcal-calendar-id')) {
+            document.getElementById('gcal-calendar-id').value = s.gcal_calendar_id || '';
+          }
+          if (document.getElementById('gcal-auto-sync')) {
+            document.getElementById('gcal-auto-sync').checked = (s.gcal_auto_sync !== 'false');
+          }
+          if (document.getElementById('gcal-sync-interval')) {
+            document.getElementById('gcal-sync-interval').value = s.gcal_sync_interval || 'realtime';
+          }
+          // Sync event type checkboxes
+          if (document.getElementById('gcal-sync-deadlines')) {
+            document.getElementById('gcal-sync-deadlines').checked = (s.gcal_sync_deadlines !== 'false');
+          }
+          if (document.getElementById('gcal-sync-hearings')) {
+            document.getElementById('gcal-sync-hearings').checked = (s.gcal_sync_hearings !== 'false');
+          }
+          if (document.getElementById('gcal-sync-renewals')) {
+            document.getElementById('gcal-sync-renewals').checked = (s.gcal_sync_renewals !== 'false');
+          }
+          if (document.getElementById('gcal-sync-tasks')) {
+            document.getElementById('gcal-sync-tasks').checked = (s.gcal_sync_tasks === 'true');
+          }
+          // Update connection status
+          App.updateCalendarConnectionStatus(s);
+          // Last sync info
+          if (document.getElementById('gcal-last-sync-text') && s.gcal_last_sync) {
+            document.getElementById('gcal-last-sync-text').textContent = 'Last sync: ' + formatDateJS(s.gcal_last_sync);
+          }
+          if (document.getElementById('gcal-sync-count') && s.gcal_sync_count) {
+            document.getElementById('gcal-sync-count').textContent = s.gcal_sync_count + ' events synced';
+          }
+        }
+      })
+      .getSettings();
+  },
+
+  saveCalendarSettingsForm: function() {
+    var calEl = document.getElementById('setting-calendar');
+    var remEl = document.getElementById('setting-remdays');
+    var data = {
+      default_calendar: calEl ? calEl.value : 'Primary Calendar',
+      default_remdays: remEl ? remEl.value : '7,3,1',
+      gcal_auto_sync: document.getElementById('gcal-auto-sync') ? String(document.getElementById('gcal-auto-sync').checked) : 'true',
+      gcal_sync_interval: document.getElementById('gcal-sync-interval') ? document.getElementById('gcal-sync-interval').value : 'realtime',
+      gcal_sync_deadlines: document.getElementById('gcal-sync-deadlines') ? String(document.getElementById('gcal-sync-deadlines').checked) : 'true',
+      gcal_sync_hearings: document.getElementById('gcal-sync-hearings') ? String(document.getElementById('gcal-sync-hearings').checked) : 'true',
+      gcal_sync_renewals: document.getElementById('gcal-sync-renewals') ? String(document.getElementById('gcal-sync-renewals').checked) : 'true',
+      gcal_sync_tasks: document.getElementById('gcal-sync-tasks') ? String(document.getElementById('gcal-sync-tasks').checked) : 'false'
+    };
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.showToast("Calendar settings saved successfully!");
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to save calendar settings.", true);
+      })
+      .saveCalendarSettings(data);
+  },
+
+  // --- Google Calendar API Setup Functions ---
+  saveGoogleCalendarApi: function() {
+    var clientId = document.getElementById('gcal-client-id').value.trim();
+    var clientSecret = document.getElementById('gcal-client-secret').value.trim();
+    var calendarId = document.getElementById('gcal-calendar-id').value.trim();
+
+    if (!clientId || !clientSecret) {
+      this.showToast("Please enter both Client ID and Client Secret.", true);
+      return;
+    }
+
+    var data = {
+      gcal_client_id: clientId,
+      gcal_client_secret: clientSecret,
+      gcal_calendar_id: calendarId || 'primary',
+      gcal_connected: 'true',
+      gcal_connected_at: new Date().toISOString()
+    };
+
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.showToast("Google Calendar API connected successfully!");
+        self.updateCalendarConnectionStatus({ gcal_connected: 'true', gcal_client_id: clientId });
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to save API credentials.", true);
+      })
+      .saveCalendarSettings(data);
+  },
+
+  toggleCalendarInstructions: function() {
+    var body = document.getElementById('gcal-instructions-body');
+    var toggle = body.previousElementSibling;
+    if (body.classList.contains('hidden')) {
+      body.classList.remove('hidden');
+      toggle.classList.add('open');
+    } else {
+      body.classList.add('hidden');
+      toggle.classList.remove('open');
+    }
+  },
+
+  toggleSecretVisibility: function() {
+    var input = document.getElementById('gcal-client-secret');
+    var icon = document.getElementById('gcal-eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.textContent = 'visibility_off';
+    } else {
+      input.type = 'password';
+      icon.textContent = 'visibility';
+    }
+  },
+
+  testCalendarConnection: function() {
+    var clientId = document.getElementById('gcal-client-id').value.trim();
+    var clientSecret = document.getElementById('gcal-client-secret').value.trim();
+
+    if (!clientId || !clientSecret) {
+      this.showToast("Please enter API credentials first.", true);
+      return;
+    }
+
+    var btn = document.getElementById('gcal-btn-test');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 1s linear infinite;">sync</span> Testing...';
+
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(result) {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span> Test Connection';
+        if (result && result.success) {
+          self.showToast("Connection successful! Calendar API is working.");
+          self.updateCalendarConnectionStatus({ gcal_connected: 'true', gcal_client_id: clientId });
+        } else {
+          self.showToast("Connection failed: " + (result ? result.error : "Unknown error"), true);
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span> Test Connection';
+        self.showToast("Connection test failed: " + err.message, true);
+      })
+      .testCalendarApiConnection(clientId, clientSecret);
+  },
+
+  manualCalendarSync: function() {
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(result) {
+        self.hideLoading();
+        if (result && result.synced !== undefined) {
+          self.showToast("Sync complete! " + result.synced + " events synchronized.");
+          if (document.getElementById('gcal-sync-count')) {
+            document.getElementById('gcal-sync-count').textContent = result.synced + ' events synced';
+          }
+          if (document.getElementById('gcal-last-sync-text')) {
+            document.getElementById('gcal-last-sync-text').textContent = 'Last sync: Just now';
+          }
+        } else {
+          self.showToast("Calendar sync completed.");
+        }
+      })
+      .withFailureHandler(function(err) {
+        self.hideLoading();
+        self.showToast("Sync failed: " + (err ? err.message : "Unknown error"), true);
+      })
+      .syncAllCalendarEvents();
+  },
+
+  updateCalendarConnectionStatus: function(settings) {
+    var banner = document.getElementById('gcal-status-banner');
+    var dot = document.getElementById('gcal-status-dot');
+    var text = document.getElementById('gcal-status-text');
+    var meta = document.getElementById('gcal-status-meta');
+    var connectBtn = document.getElementById('gcal-btn-connect');
+
+    if (!banner) return;
+
+    if (settings && settings.gcal_connected === 'true' && settings.gcal_client_id) {
+      banner.classList.add('connected');
+      text.textContent = 'Connected';
+      meta.textContent = 'Google Calendar API is active and syncing';
+      if (connectBtn) {
+        connectBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">link_off</span> Update Credentials';
+      }
+    } else {
+      banner.classList.remove('connected');
+      text.textContent = 'Not Connected';
+      meta.textContent = 'Set up your Google Calendar API to sync deadlines and reminders';
+      if (connectBtn) {
+        connectBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">link</span> Connect & Authorize';
+      }
+    }
+  },
+
+  saveMatterForm: function() {
+    var id = document.getElementById('matter-id').value;
+    var catEl = document.getElementById('f-category');
+    var category = catEl ? catEl.value : 'Trademark';
+    
+    var companyVal = document.getElementById('f-company') ? document.getElementById('f-company').value : '';
+    var brandVal = document.getElementById('f-brand') ? document.getElementById('f-brand').value : '';
+    var nameInputVal = document.getElementById('f-name') ? document.getElementById('f-name').value.trim() : '';
+    
+    // For Trademark, Brand Name is the mark name; otherwise use Matter Title
+    var finalMatterName = (category === 'Trademark' ? (brandVal || nameInputVal) : (nameInputVal || brandVal)) || 'Untitled Matter';
+    
+    var appRegNo = document.getElementById('f-appno') ? document.getElementById('f-appno').value.trim() : '';
+    
+    var data = {
+      'Matter Name': finalMatterName,
+      'Application / Case No.': appRegNo,
+      'Registration No.': appRegNo,
+      'Class': document.getElementById('f-class') ? document.getElementById('f-class').value : '',
+      'Proprietor / Owner': companyVal,
+      'Client / Company': companyVal,
+      'Company Name': companyVal,
+      'Agent Name': document.getElementById('f-agent') ? document.getElementById('f-agent').value : '',
+      'Brand Name': (category === 'Trademark' ? brandVal : ''),
+      'Registration Date': document.getElementById('f-regdate') ? document.getElementById('f-regdate').value : '',
+      'Renewal Due Date': document.getElementById('f-renewdate') ? document.getElementById('f-renewdate').value : '',
+      'Category': category,
+      'Type': document.getElementById('f-type') ? document.getElementById('f-type').value : '',
+      'Status': document.getElementById('f-status') ? document.getElementById('f-status').value : 'Pending',
+      'Next Action': document.getElementById('f-nextaction') ? document.getElementById('f-nextaction').value : '',
+      'Next Date': document.getElementById('f-nextdate') ? document.getElementById('f-nextdate').value : '',
+      'Reminder Enabled': (document.getElementById('f-reminder') && document.getElementById('f-reminder').checked) ? 'Yes' : 'No',
+      'Reminder Days': document.getElementById('f-remdays') ? document.getElementById('f-remdays').value : '7,3,1'
+    };
+    if (id) data.ID = id;
+    
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function() {
+        App.hideLoading();
+        App.showToast("Matter saved successfully!");
+        App.navigateTo('matters');
+      })
+      .withFailureHandler(function() {
+        App.hideLoading();
+        App.showToast("Failed to save matter.", true);
+      })
+      .saveMatter(data);
+  },
+  
+  // --- Matter Details & Activity ---
+  loadMatterDetails: function(id) {
+    this.currentMatterId = id;
+    this.showLoading();
+    
+    // 1. Fetch Matter Details
+    google.script.run
+      .withSuccessHandler(function(m) {
+        if(m) {
+          document.getElementById('md-title').innerText = m['Matter Name'];
+          document.getElementById('md-appno').innerText = m['Application / Case No.'] || '-';
+          if (document.getElementById('md-regno')) document.getElementById('md-regno').innerText = m['Registration No.'] || '-';
+          if (document.getElementById('md-class')) document.getElementById('md-class').innerText = m['Class'] || '-';
+          if (document.getElementById('md-owner')) document.getElementById('md-owner').innerText = m['Proprietor / Owner'] || m['Client / Company'] || '-';
+          if (document.getElementById('md-regdate')) document.getElementById('md-regdate').innerText = formatDateJS(m['Registration Date'] || m['Created Date']);
+          if (document.getElementById('md-renewdate')) document.getElementById('md-renewdate').innerText = formatDateJS(m['Renewal Due Date'] || m['Next Date']);
+          document.getElementById('md-type').innerText = m.Category + ' / ' + m.Type;
+          document.getElementById('md-status').innerText = m._displayStatus || m.Status;
+          document.getElementById('md-nextaction').innerText = m['Next Action'] || '-';
+          document.getElementById('md-nextdate').innerText = formatDateJS(m['Next Date']);
+        }
+      })
+      .getMatterById(id);
+      
+    // 2. Fetch Activity Log
+    google.script.run
+      .withSuccessHandler(function(logs) {
+        var ul = document.getElementById('md-activity-log');
+        ul.innerHTML = '';
+        if(logs.length === 0) {
+          ul.innerHTML = '<li style="padding:16px; text-align:center; color:gray;">No activity found.</li>';
+        } else {
+          logs.forEach(function(l) {
+            var li = document.createElement('li');
+            li.style.padding = '12px 0';
+            li.style.borderBottom = '1px solid #eee';
+            li.innerHTML = `
+              <div style="font-size:12px; color:gray;">${formatDateJS(l.Date)} - ${l.User}</div>
+              <div style="font-weight:500; margin-top:4px;">${l.Action}</div>
+              <div style="font-size:13px; color:#444;">${l.Description || ''}</div>
+            `;
+            ul.appendChild(li);
+          });
+        }
+        App.hideLoading();
+      })
+      .getMatterActivity(id);
+  },
+  
+  // --- Tasks ---
+  loadTasks: function() {
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function(tasks) {
+        App.tasks = tasks;
+        var tbody = document.getElementById('tasks-tbody');
+        tbody.innerHTML = '';
+        if(tasks.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">No tasks found.</td></tr>';
+        } else {
+          tasks.forEach(function(t) {
+            var statusClass = (t._displayStatus === 'Overdue') ? 'bg-red' : 'bg-blue';
+            var tr = `
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>${t['Task Name']}</strong></td>
+                <td>${formatDateJS(t['Due Date'])}</td>
+                <td><span class="badge ${statusClass}">${t._displayStatus || t.Status}</span></td>
+              </tr>
+            `;
+            tbody.innerHTML += tr;
+          });
+        }
+        App.hideLoading();
+      })
+      .getAllTasks();
+  },
+  
+  saveTaskForm: function() {
+    var data = {
+      'Task Name': document.getElementById('t-name').value,
+      'Due Date': document.getElementById('t-date').value,
+      'Status': 'Pending'
+    };
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function() {
+        document.getElementById('task-form-card').classList.add('hidden');
+        App.loadTasks();
+      })
+      .saveTask(data);
+  }
+};
+
+function formatDateJS(dateStr) {
+  if(!dateStr) return '-';
+  var d = new Date(dateStr);
+  if(isNaN(d.getTime())) return dateStr;
+  var options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return d.toLocaleDateString('en-GB', options);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  App.init();
+});
+</script>

@@ -1,0 +1,103 @@
+<!-- ROYAL MANAGER: MatterList View (Redesign) -->
+<div id="view-matters" class="view-section">
+  
+  <div class="dash-table-section">
+    <div class="table-header" style="margin-bottom: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0;">
+          <span id="matters-page-title" style="font-size: 22px; color: var(--text-dark); font-weight: 700;">All Matters</span>
+        </h2>
+        <span id="matters-page-subtitle" style="font-size: 13px; color: var(--text-muted);"></span>
+      </div>
+      
+      <div style="display:flex; gap:16px; align-items: center;">
+        <div id="standard-search-wrap" class="search-bar" style="width: 260px;">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="standard-search-input" placeholder="Search this list..." oninput="App.applyStandardSearch(this.value)">
+        </div>
+        <button class="btn btn-primary" onclick="App.navigateTo('matter-form')">+ Add New</button>
+      </div>
+    </div>
+    
+    <!-- Standard Tabs (Visible for standard views, hidden for Registration views) -->
+    <div id="standard-tabs-wrap" style="margin-bottom: 20px;">
+      <div class="table-tabs" style="margin-left: 0; font-size: 14px;">
+        <div class="tab active" onclick="App.renderMattersTable(window.currentCategoryFilter, 'All');">All</div>
+        <div class="tab" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Under Process');">Under Process</div>
+        <div class="tab" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Pending');">Pending</div>
+        <div class="tab" id="tab-overdue" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Overdue');" style="color:var(--status-overdue)">Overdue</div>
+        <div class="tab" id="tab-completed" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Completed');">Completed</div>
+      </div>
+    </div>
+
+    <!-- Active Trademarks Dedicated Filters -->
+    <div class="reg-filter-box hidden" id="tm-reg-filters">
+      <div class="reg-filter-header">
+        <div class="reg-filter-title">
+          <span class="material-symbols-outlined" style="color:var(--primary); font-size:20px;">filter_alt</span>
+          Filter Active Trademarks
+          <span class="badge bg-green text-green" style="font-size:11px; margin-left:8px;">Status: Registered</span>
+        </div>
+        <button type="button" class="btn-reset-filters" onclick="App.resetRegFilters('TM')">
+          <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span> Reset
+        </button>
+      </div>
+      <div class="reg-filter-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 550px;">
+        <div class="filter-item">
+          <label>Company</label>
+          <select id="tm-filt-company" onchange="App.applyRegFilters()">
+            <option value="">All Companies</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Class</label>
+          <select id="tm-filt-class" onchange="App.applyRegFilters()">
+            <option value="">All Classes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Copyrights Dedicated Filters -->
+    <div class="reg-filter-box hidden" id="cp-reg-filters">
+      <div class="reg-filter-header">
+        <div class="reg-filter-title">
+          <span class="material-symbols-outlined" style="color:var(--primary); font-size:20px;">filter_alt</span>
+          Filter Active Copyrights
+          <span class="badge bg-green text-green" style="font-size:11px; margin-left:8px;">Status: Registered</span>
+        </div>
+        <button type="button" class="btn-reset-filters" onclick="App.resetRegFilters('CP')">
+          <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span> Reset
+        </button>
+      </div>
+      <div class="reg-filter-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 320px;">
+        <div class="filter-item">
+          <label>Company</label>
+          <select id="cp-filt-company" onchange="App.applyRegFilters()">
+            <option value="">All Companies</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead id="matters-page-thead">
+          <tr>
+            <th style="width: 40px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="matters-page-tbody">
+          <!-- JS will populate -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

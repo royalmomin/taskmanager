@@ -1,0 +1,4428 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Material Symbols) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    
+    <style>
+/* 
+ * ROYAL MANAGER
+ * Main Stylesheet - Redesign
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+
+:root {
+  --primary: #0062ff;      
+  --primary-light: #e6f0fa;
+  --bg-color: #f7f9fd;     
+  --sidebar-bg: #1a243a;   
+  --sidebar-text: #9ba6bd;
+  --text-main: #2d3748;
+  --text-dark: #111827;
+  --text-muted: #718096;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Layout */
+#app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+#sidebar .logo {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#sidebar .logo .icon {
+  color: #fbbf24; /* Golden */
+  font-size: 32px;
+}
+#sidebar .logo .text-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+#sidebar .logo .title {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+#sidebar .logo .subtitle {
+  font-size: 11px;
+  color: var(--sidebar-text);
+}
+
+#sidebar .nav-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 16px;
+}
+
+.nav-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.nav-item:hover { color: #fff; }
+.nav-item.active {
+  background-color: var(--primary);
+  color: #fff;
+}
+.nav-item .nav-text { flex: 1; }
+.nav-item .chevron { font-size: 18px; transition: transform 0.2s; }
+.nav-item.open .chevron { transform: rotate(90deg); }
+
+.sub-menu {
+  display: none;
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+.sub-menu.open { display: block; }
+
+.sub-item {
+  padding: 8px 16px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+}
+.sub-item::before {
+  content: "▸";
+  margin-right: 8px;
+  font-size: 10px;
+}
+.sub-item:hover { color: #fff; }
+
+.sidebar-quote {
+  margin: 20px 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-md);
+  font-style: italic;
+  font-size: 13px;
+  color: #cbd5e1;
+  text-align: center;
+  position: relative;
+}
+.sidebar-quote .author {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 12px;
+  color: var(--sidebar-text);
+}
+
+/* Main Content */
+#main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+#header {
+  height: 70px;
+  background: var(--bg-color); /* blends with bg */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  flex-shrink: 0;
+}
+.search-bar {
+  flex: 1;
+  max-width: 500px;
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  font-size: 14px;
+}
+.search-bar .material-symbols-outlined {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.notification {
+  position: relative;
+  cursor: pointer;
+}
+.notification .badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: #ef4444; color: white;
+  font-size: 10px; font-weight: bold;
+  padding: 2px 6px; border-radius: 10px;
+}
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.user-avatar {
+  width: 36px; height: 36px;
+  background: var(--sidebar-bg);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 14px;
+}
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); }
+.user-role { font-size: 12px; color: var(--text-muted); }
+
+/* Views */
+#view-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 32px 32px; /* Top padding handled by header */
+}
+.view-section { display: none; }
+.view-section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:translateY(0);} }
+
+/* Dashboard Banner */
+.dash-banner {
+  background: linear-gradient(135deg, #e0f2fe 0%, #eef2ff 100%);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+/* A simple CSS mountain/sun mock */
+.dash-banner::before {
+  content: ""; position: absolute; bottom: -20px; right: 0; left: 0; height: 100px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,100 L0,50 Q100,20 200,60 T400,30 T600,70 T800,40 T1000,60 L1000,100 Z" fill="rgba(147,197,253,0.3)"/></svg>') no-repeat bottom center;
+  background-size: cover; z-index: 1; pointer-events: none;
+}
+.dash-banner h1 { font-size: 24px; color: var(--sidebar-bg); margin-bottom: 4px; z-index: 2; position: relative; }
+.dash-banner p { color: var(--text-muted); font-size: 14px; z-index: 2; position: relative; }
+.dash-banner .handwritten {
+  position: absolute; right: 40px; top: 20px;
+  font-family: 'Caveat', cursive; font-size: 24px; color: #1e3a8a;
+  transform: rotate(-5deg); z-index: 2; text-align: right; line-height: 1.2;
+}
+
+/* Top Stat Cards */
+.top-stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--card-bg); border-radius: var(--radius-md); padding: 16px;
+  display: flex; align-items: center; gap: 16px; border: 1px solid var(--border-color);
+}
+.stat-card .icon-wrap {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.stat-card .icon-wrap .material-symbols-outlined { font-size: 24px; color: white; }
+.stat-card .info { flex: 1; }
+.stat-card .title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px;}
+.stat-card .count { font-size: 24px; font-weight: 700; color: var(--text-dark); line-height: 1; margin-bottom: 4px;}
+.stat-card .desc { font-size: 11px; color: var(--text-muted); }
+
+.sc-total { background: #f0f7ff; border-color: #dbeafe; }
+.sc-total .icon-wrap { background: #3b82f6; }
+.sc-process { background: #f0fdf4; border-color: #dcfce7; }
+.sc-process .icon-wrap { background: #22c55e; }
+.sc-pending { background: #fffbeb; border-color: #fef3c7; }
+.sc-pending .icon-wrap { background: #f59e0b; }
+.sc-overdue { background: #fef2f2; border-color: #fee2e2; }
+.sc-overdue .icon-wrap { background: #ef4444; }
+.sc-completed { background: #faf5ff; border-color: #f3e8ff; }
+.sc-completed .icon-wrap { background: #8b5cf6; }
+
+/* Category Cards */
+.category-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px;
+}
+.cat-card {
+  background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px;
+  border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+}
+.cat-card-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;
+}
+.cat-card-header .left { display: flex; align-items: center; gap: 12px; }
+.cat-card-header .icon-wrap {
+  width: 40px; height: 40px; border-radius: 50%; color: white;
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;
+}
+.cat-tm .icon-wrap { background: #3b82f6; }
+.cat-cp .icon-wrap { background: #8b5cf6; }
+.cat-co .icon-wrap { background: #10b981; }
+
+.cat-card-header .title { font-weight: 600; font-size: 15px; color: var(--text-dark); }
+.cat-card-header .count { font-weight: 700; font-size: 24px; color: var(--text-dark); line-height: 1; }
+.cat-card-header .arrow { color: var(--primary); cursor: pointer; }
+
+.cat-list { list-style: none; }
+.cat-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; font-size: 13px; color: var(--text-main);
+}
+.cat-list li .num-wrap { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-weight: 500;}
+.cat-list li .material-symbols-outlined { font-size: 14px; }
+
+/* Dashboard Table Section */
+.dash-table-section { margin-bottom: 32px; }
+.table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.table-header h2 { font-size: 18px; color: var(--text-dark); display: flex; align-items: center; gap: 16px; }
+.table-tabs { display: flex; gap: 24px; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-left: 20px;}
+.table-tabs .tab { cursor: pointer; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: all 0.2s;}
+.table-tabs .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 500; font-size: 13px;
+  cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-family: inherit;
+}
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-primary:hover { background-color: #0056e0; }
+
+/* Table styling */
+.table-container {
+  background: var(--card-bg); border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+th { color: var(--text-muted); font-weight: 600; font-size: 12px; }
+tbody tr:hover { background-color: #f8fafc; }
+td.text-muted { color: var(--text-muted); font-size: 12px; margin-top: 2px; display: block;}
+
+/* Badges */
+.badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; text-align: center; min-width: 80px;}
+.bg-red { background: #fee2e2; color: #dc2626; }
+.bg-blue { background: #e0f2fe; color: #0284c7; }
+.bg-yellow { background: #fef3c7; color: #d97706; }
+.bg-gray { background: #f1f5f9; color: #475569; }
+
+.text-red { color: #dc2626; font-weight: 500; }
+.text-blue { color: #0284c7; font-weight: 500; }
+.text-purple { color: #7c3aed; font-weight: 500; }
+.text-green { color: #059669; font-weight: 500; }
+
+/* Quick Actions */
+.quick-actions-wrap { margin-bottom: 40px; }
+.quick-actions-wrap h3 { font-size: 16px; margin-bottom: 16px; color: var(--text-dark); }
+.qa-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.qa-btn {
+  display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+  border-radius: var(--radius-md); border: none; font-weight: 500; font-size: 13px; cursor: pointer;
+  background: var(--card-bg); box-shadow: var(--shadow-sm); font-family: inherit;
+}
+.qa-btn .icon {
+  width: 24px; height: 24px; border-radius: 50%; color: white;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold;
+}
+.qa-tm { background: #eff6ff; color: #1d4ed8; } .qa-tm .icon { background: #3b82f6; }
+.qa-opp { background: #fef2f2; color: #b91c1c; } .qa-opp .icon { background: #ef4444; }
+.qa-cp { background: #faf5ff; color: #6d28d9; } .qa-cp .icon { background: #8b5cf6; }
+.qa-co { background: #ecfdf5; color: #047857; } .qa-co .icon { background: #10b981; }
+.qa-gen { background: #ffffff; color: var(--text-main); border: 1px solid var(--border-color); }
+.qa-gen .material-symbols-outlined { color: var(--text-muted); }
+
+.qa-promo {
+  margin-left: auto; background: #f0fdf4; padding: 12px 24px; border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 12px;
+}
+.qa-promo .text { font-family: 'Caveat', cursive; font-size: 20px; color: #065f46; line-height: 1.1;}
+.qa-promo .leaf { color: #10b981; font-size: 24px; }
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+  width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border-color); cursor: pointer;
+}
+
+/* Dots menu */
+.dots-menu { cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 4px; }
+.dots-menu:hover { background: #f1f5f9; }
+
+/* Forms & Modals (Restyled from original) */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; }
+.form-control { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; }
+.form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 98, 255, 0.15); }
+.form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; }
+
+.hidden { display: none !important; }
+
+/* Overlay */
+#loading-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.7);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.spinner { border: 4px solid #e5e7eb; width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--primary); animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Registration Filter Bar */
+.reg-filter-box {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.reg-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.reg-filter-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.reg-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-item label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.filter-item input, .filter-item select {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+.filter-item input:focus, .filter-item select:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 98, 255, 0.12);
+}
+.btn-reset-filters {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-reset-filters:hover {
+  text-decoration: underline;
+}
+
+.btn-secondary {
+  background-color: #f8fafc;
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Modern Form Redesign System
+   ========================================================================== */
+.modern-form-container {
+  max-width: 900px;
+  margin: 0 auto 50px;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.form-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-back-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+.btn-back-circle:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateX(-3px);
+  color: var(--primary);
+}
+
+.form-header-title-group h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.2;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-header-title-group p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.form-badge-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0284c7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-section-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.form-section-card:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.section-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.sec-icon-blue { background: #eff6ff; color: #2563eb; }
+.sec-icon-purple { background: #faf5ff; color: #7c3aed; }
+.sec-icon-amber { background: #fffbeb; color: #d97706; }
+.sec-icon-green { background: #ecfdf5; color: #059669; }
+
+.section-title-wrap h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.section-title-wrap p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.form-grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+}
+
+.col-12 { grid-column: span 12; }
+.col-8  { grid-column: span 8; }
+.col-6  { grid-column: span 6; }
+.col-4  { grid-column: span 4; }
+.col-3  { grid-column: span 3; }
+
+@media (max-width: 768px) {
+  .col-8, .col-6, .col-4, .col-3 { grid-column: span 12 !important; }
+  .form-header-bar { flex-direction: column; align-items: flex-start; }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-field label .req {
+  color: #ef4444;
+  margin-left: 3px;
+  font-weight: 700;
+}
+
+.form-field label .field-hint-text {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.modern-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  color: var(--text-dark);
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.modern-input:hover {
+  border-color: #cbd5e1;
+  background-color: #ffffff;
+}
+
+.modern-input:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 98, 255, 0.12);
+}
+
+.modern-input::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+select.modern-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+  appearance: none;
+}
+
+/* Reminder Alert Box */
+.reminder-accent-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px solid #fde68a;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.reminder-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.reminder-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 24px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch-toggle input:checked + .switch-slider {
+  background-color: #2563eb;
+}
+
+.switch-toggle input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+
+.reminder-presets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.preset-chip {
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #92400e;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.preset-chip:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+/* Action Footer */
+.form-action-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  margin-top: 28px;
+}
+
+.form-action-footer .left-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* Master Data Management Redesign */
+.master-data-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.md-nav-tabs {
+  display: flex;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: var(--radius-md);
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.md-nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.md-nav-tab:hover {
+  color: var(--text-dark);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.md-nav-tab.active {
+  background: #ffffff;
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.md-badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.md-nav-tab.active .md-badge-count {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.md-panel {
+  display: none;
+}
+
+.md-panel.active {
+  display: block;
+  animation: fadeIn 0.2s ease;
+}
+
+.md-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.md-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.md-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.md-panel-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.md-search-box {
+  position: relative;
+  min-width: 220px;
+  max-width: 300px;
+}
+
+.md-search-box .search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.md-search-box input {
+  width: 100%;
+  padding: 7px 12px 7px 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.md-search-box input:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 98, 255, 0.12);
+}
+
+.md-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.md-items-scrollable {
+  max-height: 440px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.md-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.md-item-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+
+.md-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.md-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.md-icon-company {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.md-icon-brand {
+  background: #fdf2f8;
+  color: #db2777;
+}
+
+.md-icon-agent {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.md-item-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+}
+
+.md-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.md-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.md-btn-icon:hover {
+  background: #f1f5f9;
+  color: var(--text-dark);
+}
+
+.md-btn-delete:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.md-empty-state {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--text-muted);
+}
+
+.md-empty-icon {
+  font-size: 40px;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+/* Master Data Modal */
+.md-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  animation: fadeIn 0.15s ease;
+}
+
+.md-modal-dialog {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 440px;
+  overflow: hidden;
+  animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.md-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.md-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.md-modal-body {
+  padding: 20px;
+}
+
+.md-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.md-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.md-section-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.md-items-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+.md-items-scrollable::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.md-items-scrollable::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.md-items-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================================
+   Google Calendar API Setup Styles
+   ========================================================================== */
+
+/* Status Banner */
+.gcal-status-banner {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
+  border: 1.5px solid #fecaca;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.4s ease;
+}
+
+.gcal-status-banner.connected {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-color: #bbf7d0;
+}
+
+.gcal-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gcal-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+}
+
+.gcal-status-banner.connected .gcal-status-dot {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  animation: gcalPulse 2s ease-in-out infinite;
+}
+
+@keyframes gcalPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.1); }
+}
+
+.gcal-status-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b91c1c;
+  transition: color 0.4s ease;
+}
+
+.gcal-status-banner.connected .gcal-status-text {
+  color: #15803d;
+}
+
+.gcal-status-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Calendar Card */
+.gcal-card {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.gcal-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* Icon Wrap */
+.gcal-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gcal-icon-sync {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #059669;
+}
+
+/* Help Link */
+.gcal-help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  background: #f0f7ff;
+  transition: all 0.15s;
+}
+
+.gcal-help-link:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Instructions Accordion */
+.gcal-instructions-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.gcal-instructions-toggle:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.gcal-chevron {
+  transition: transform 0.25s ease;
+}
+
+.gcal-instructions-toggle.open .gcal-chevron {
+  transform: rotate(180deg);
+}
+
+.gcal-instructions-body {
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.gcal-instructions-body:not(.hidden) {
+  margin-top: 12px;
+  padding: 16px 20px;
+  background: #fafbff;
+  border: 1px solid #e0e7ff;
+  border-radius: var(--radius-sm);
+}
+
+.gcal-steps-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.8;
+}
+
+.gcal-steps-list li {
+  padding: 2px 0;
+}
+
+.gcal-steps-list a {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.gcal-steps-list strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* Input with Icon */
+.gcal-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gcal-input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 18px;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gcal-input {
+  padding-left: 40px !important;
+  font-size: 13.5px !important;
+}
+
+.gcal-toggle-pass {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.gcal-toggle-pass:hover {
+  color: var(--text-dark);
+}
+
+/* Button Row */
+.gcal-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.gcal-btn-connect {
+  padding: 10px 20px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+
+.gcal-btn-test {
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+}
+
+/* Toggle Section */
+.gcal-toggle-section {
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.gcal-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gcal-toggle-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+/* Options Grid */
+.gcal-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .gcal-options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Checkbox Grid */
+.gcal-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .gcal-checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gcal-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.gcal-checkbox-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.gcal-checkbox-item input[type="checkbox"]:checked + .gcal-check-label {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.gcal-check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+/* Action Footer */
+.gcal-action-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.gcal-btn-manual-sync {
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+  border: 1px solid #bbf7d0 !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+}
+
+.gcal-btn-manual-sync:hover {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  transform: translateY(-1px);
+}
+
+/* Last Sync Bar */
+.gcal-last-sync-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.gcal-last-sync-text {
+  flex: 1;
+}
+
+.gcal-sync-count {
+  font-weight: 600;
+  color: #475569;
+  background: #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+</style>
+
+  
+<script>
+  // MOCK GOOGLE SCRIPT RUN FOR LOCAL PREVIEW
+  var google = {
+    script: {
+      run: {
+        withSuccessHandler: function(callback) {
+          this.successCb = callback;
+          return this;
+        },
+        withFailureHandler: function(callback) {
+          this.failureCb = callback;
+          return this;
+        },
+        getDashboardData: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb({
+              top: { total: 112, underProcess: 48, pending: 22, overdue: 3, completed: 39 },
+              trademark: { total: 45, registration: 24, newApp: 10, opposition: 5, rectification: 2, renewal: 28, hearing: 0, other: 0 },
+              copyright: { total: 20, totalApp: 15, newApp: 15, objection: 3, hearing: 2, registration: 0, other: 0 },
+              company: { total: 47, compliance: 20, agreements: 15, licences: 5, renewals: 5, payments: 2, other: 0 }
+            });
+          }, 500);
+        },
+        getAllMatters: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb([
+              // Active Trademark Registrations
+              {
+                ID: '101', 'Matter Name': 'Royal Shield Logo', 'Application / Case No.': '5544332', 'Registration No.': 'TM-449120',
+                'Class': 'Class 35', 'Proprietor / Owner': 'Royal Enterprises Pvt Ltd', 'Client / Company': 'Royal Enterprises Pvt Ltd',
+                'Registration Date': '2021-04-12', 'Renewal Due Date': '2031-04-12', 'Mark Type': 'Device',
+                Category: 'Trademark', Type: 'Registration', Status: 'Registered', Priority: 'Medium',
+                'Next Action': 'Renewal in 2031', 'Next Date': '2031-04-12', _displayStatus: 'Registered'
+              },
+              {
+                ID: '102', 'Matter Name': 'Astra Global Tech', 'Application / Case No.': '4918234', 'Registration No.': 'TM-382910',
+                'Class': 'Class 9, 42', 'Proprietor / Owner': 'Astra Technologies Inc.', 'Client / Company': 'Astra Technologies Inc.',
+                'Registration Date': '2019-11-20', 'Renewal Due Date': '2029-11-20', 'Mark Type': 'Word Mark',
+                Category: 'Trademark', Type: 'Registration', Status: 'Active', Priority: 'High',
+                'Next Action': 'Maintain Status', 'Next Date': '2029-11-20', _displayStatus: 'Active'
+              },
+              // Inactive Trademark Registrations (Must be excluded from Total TM Registration!)
+              {
+                ID: '103', 'Matter Name': 'Old Brandmark Expired', 'Application / Case No.': '2211445', 'Registration No.': 'TM-112233',
+                'Class': 'Class 25', 'Proprietor / Owner': 'Heritage Mills', 'Client / Company': 'Heritage Mills',
+                'Registration Date': '2010-01-15', 'Renewal Due Date': '2020-01-15',
+                Category: 'Trademark', Type: 'Registration', Status: 'Expired', Priority: 'Low',
+                'Next Action': 'None', 'Next Date': '', _displayStatus: 'Expired'
+              },
+              {
+                ID: '104', 'Matter Name': 'Vintage Motors Abandoned', 'Application / Case No.': '3344556', 'Registration No.': 'TM-998877',
+                'Class': 'Class 12', 'Proprietor / Owner': 'Vintage Corp', 'Client / Company': 'Vintage Corp',
+                Category: 'Trademark', Type: 'Registration', Status: 'Abandoned', Priority: 'Low',
+                'Next Action': 'Closed File', 'Next Date': '', _displayStatus: 'Abandoned'
+              },
+
+              // Trademark other sub-modules
+              {
+                ID: '1', 'Matter Name': 'Powerjeet Bidi', 'Application / Case No.': '6611916', Category: 'Trademark', Type: 'Opposition', 
+                'Next Action': 'File Opposition', 'Next Date': '2026-09-20', Status: 'Pending', Priority: 'High', 
+                'Calendar Event ID': '123', _displayStatus: 'Pending', _daysLeft: 15
+              },
+              {
+                ID: '2', 'Matter Name': 'Sunrise', 'Application / Case No.': '7894561', Category: 'Trademark', Type: 'New Application', 
+                'Next Action': 'Send Documents', 'Next Date': '2026-09-08', Status: 'Under Process', Priority: 'High', 
+                'Calendar Event ID': null, _displayStatus: 'Under Process', _daysLeft: 3
+              },
+              {
+                ID: '6', 'Matter Name': 'Falcon Motors', 'Application / Case No.': '8877665', Category: 'Trademark', Type: 'Rectification', 
+                'Next Action': 'Submit Evidence', 'Next Date': '2026-09-25', Status: 'Under Process', Priority: 'Medium', 
+                _displayStatus: 'Under Process', _daysLeft: 20
+              },
+              {
+                ID: '7', 'Matter Name': 'Zenith Care', 'Application / Case No.': '3322114', Category: 'Trademark', Type: 'Renewal', 
+                'Next Action': 'Pay Renewal Fees', 'Next Date': '2026-09-12', Status: 'Pending', Priority: 'High', 
+                _displayStatus: 'Pending', _daysLeft: 7
+              },
+
+              // Active Copyright Registrations
+              {
+                ID: '201', 'Matter Name': 'Royal Codebase & Software Suite', 'Application / Case No.': 'CR-77123', 'Registration No.': 'SW-9812/2022',
+                'Proprietor / Owner': 'Royal Momin', 'Client / Company': 'Royal Momin',
+                'Registration Date': '2022-08-15', Category: 'Copyright', Type: 'Registration', Status: 'Registered', Priority: 'Medium',
+                'Next Action': 'Certificate in Locker', 'Next Date': '2028-08-15', _displayStatus: 'Registered'
+              },
+              {
+                ID: '202', 'Matter Name': 'Golden Harvest Artwork', 'Application / Case No.': 'CR-88910', 'Registration No.': 'A-54321/2023',
+                'Proprietor / Owner': 'Creative Arts Studio', 'Client / Company': 'Creative Arts Studio',
+                'Registration Date': '2023-01-10', Category: 'Copyright', Type: 'Registration', Status: 'Active', Priority: 'Low',
+                'Next Action': 'Archived Copy Filed', 'Next Date': '2029-01-10', _displayStatus: 'Active'
+              },
+              // Inactive Copyright Registration (Must be excluded from Total Copyright Registration!)
+              {
+                ID: '203', 'Matter Name': 'Archived Novel Draft Closed', 'Application / Case No.': 'CR-12345', 'Registration No.': 'L-11223/2010',
+                'Proprietor / Owner': 'Literary Press', 'Client / Company': 'Literary Press',
+                Category: 'Copyright', Type: 'Registration', Status: 'Closed', Priority: 'Low',
+                'Next Action': 'File Closed', 'Next Date': '', _displayStatus: 'Closed'
+              },
+
+              // Copyright other sub-modules
+              {
+                ID: '4', 'Matter Name': 'Creative Arts', 'Application / Case No.': '1456789', Category: 'Copyright', Type: 'Objection / Reply', 
+                'Next Action': 'Reply to Objection', 'Next Date': '2026-09-03', Status: 'Pending', Priority: 'Medium', 
+                'Calendar Event ID': null, _displayStatus: 'Overdue', _daysLeft: -2
+              },
+              {
+                ID: '5', 'Matter Name': 'Music Album Artwork', 'Application / Case No.': '2233441', Category: 'Copyright', Type: 'New Application', 
+                'Next Action': 'Awaiting Diary No.', 'Next Date': '2026-09-15', Status: 'Under Process', Priority: 'Low', 
+                'Calendar Event ID': null, _displayStatus: 'Under Process', _daysLeft: 10
+              },
+
+              // Company Tasks sub-modules
+              {
+                ID: '301', 'Matter Name': 'ROC Annual Return Filing 2026', 'Application / Case No.': 'ROC-9901', Category: 'Company Tasks', Type: 'Compliance / ROC',
+                'Next Action': 'File MGT-7', 'Next Date': '2026-10-30', Status: 'Under Process', Priority: 'High', _displayStatus: 'Under Process'
+              },
+              {
+                ID: '302', 'Matter Name': 'Vendor Master Service Agreement', 'Application / Case No.': 'AGR-442', Category: 'Company Tasks', Type: 'Agreements',
+                'Next Action': 'Sign Contract', 'Next Date': '2026-09-18', Status: 'Pending', Priority: 'Medium', _displayStatus: 'Pending'
+              }
+            ]);
+          }, 500);
+        },
+        getMatterById: function(id) {
+          var self = this;
+          this.getAllMatters();
+          setTimeout(function() {
+            if(self.successCb) {
+              // Read from the matters mock
+              var found = {
+                ID: id, 'Matter Name': 'Sample Matter #' + id, 'Application / Case No.': '6611916', 'Registration No.': 'TM-449120',
+                'Class': 'Class 35', 'Proprietor / Owner': 'Royal Enterprises', 'Client / Company': 'Royal Enterprises',
+                'Registration Date': '2021-04-12', 'Renewal Due Date': '2031-04-12',
+                Category: 'Trademark', Type: 'Registration', Status: 'Registered', Priority: 'High', 'Reminder Enabled': 'Yes', 'Reminder Days': '7,3,1'
+              };
+              self.successCb(found);
+            }
+          }, 500);
+        },
+        saveMatter: function(data) {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb(data);
+          }, 500);
+        },
+        getAllTasks: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb([
+              { 'Task ID': '1', 'Task Name': 'Review Documents', 'Due Date': '2026-09-10', 'Priority': 'High', 'Assigned To': 'Royal', Status: 'Pending', _displayStatus: 'Pending' }
+            ]);
+          }, 500);
+        },
+        getMatterActivity: function(id) {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb([
+              { 'Date': new Date().toISOString(), 'User': 'Royal', 'Action': 'Created', 'Description': 'Matter imported.' }
+            ]);
+          }, 500);
+        },
+        saveTask: function(data) {
+          var self = this;
+          setTimeout(function() { if(self.successCb) self.successCb(); }, 500);
+        },
+        sendEmail: function(data) {
+          var self = this;
+          setTimeout(function() { if(self.successCb) self.successCb(); }, 500);
+        },
+        getSettings: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb({
+              default_calendar: 'Primary Calendar',
+              default_remdays: '7,3,1',
+              gcal_client_id: '',
+              gcal_client_secret: '',
+              gcal_calendar_id: '',
+              gcal_connected: 'false',
+              gcal_auto_sync: 'true',
+              gcal_sync_interval: 'realtime',
+              gcal_sync_deadlines: 'true',
+              gcal_sync_hearings: 'true',
+              gcal_sync_renewals: 'true',
+              gcal_sync_tasks: 'false',
+              gcal_last_sync: '',
+              gcal_sync_count: '0'
+            });
+          }, 300);
+        },
+        saveSettings: function(data) {
+          var self = this;
+          setTimeout(function() { if(self.successCb) self.successCb(data); }, 300);
+        },
+        saveCalendarSettings: function(data) {
+          var self = this;
+          setTimeout(function() { if(self.successCb) self.successCb(data); }, 300);
+        },
+        testCalendarApiConnection: function(clientId, clientSecret) {
+          var self = this;
+          setTimeout(function() {
+            if (clientId && clientSecret) {
+              if(self.successCb) self.successCb({ success: true, calendarName: 'Primary Calendar' });
+            } else {
+              if(self.successCb) self.successCb({ success: false, error: 'Missing credentials' });
+            }
+          }, 1000);
+        },
+        syncAllCalendarEvents: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb({ synced: 3, timestamp: new Date().toISOString() });
+          }, 1500);
+        },
+        _mockMasterData: {
+          companies: [
+            { id: 'comp_1', value: 'Royal Enterprises Pvt Ltd' },
+            { id: 'comp_2', value: 'Astra Technologies Inc.' },
+            { id: 'comp_3', value: 'Heritage Mills' },
+            { id: 'comp_4', value: 'Vintage Corp' }
+          ],
+          brands: [
+            { id: 'brand_1', value: 'Royal Shield Logo' },
+            { id: 'brand_2', value: 'Sunrise' },
+            { id: 'brand_3', value: 'Astra Global Tech' },
+            { id: 'brand_4', value: 'Powerjeet Bidi' },
+            { id: 'brand_5', value: 'Falcon Motors' },
+            { id: 'brand_6', value: 'Creative Arts' },
+            { id: 'brand_7', value: 'Heritage Cotton' },
+            { id: 'brand_8', value: 'Blue Diamond' }
+          ],
+          agents: [
+            { id: 'agent_1', value: 'S. Majumdar' },
+            { id: 'agent_2', value: 'Royal' },
+            { id: 'agent_3', value: 'Admin' }
+          ]
+        },
+        getMasterData: function() {
+          var self = this;
+          setTimeout(function() {
+            if(self.successCb) self.successCb(JSON.parse(JSON.stringify(self._mockMasterData)));
+          }, 300);
+        },
+        addMasterDataItem: function(type, value) {
+          var self = this;
+          setTimeout(function() {
+            var normType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+            var listKey = (normType === 'Company') ? 'companies' : ((normType === 'Brand') ? 'brands' : 'agents');
+            var id = normType.toLowerCase() + '_' + Date.now();
+            var item = { id: id, value: value.trim() };
+            if (!self._mockMasterData[listKey]) self._mockMasterData[listKey] = [];
+            self._mockMasterData[listKey].push(item);
+            if(self.successCb) self.successCb({ success: true, item: item });
+          }, 300);
+        },
+        updateMasterDataItem: function(id, value) {
+          var self = this;
+          setTimeout(function() {
+            ['companies', 'brands', 'agents'].forEach(function(k) {
+              var it = (self._mockMasterData[k] || []).find(function(x) { return x.id === id; });
+              if (it) it.value = value.trim();
+            });
+            if(self.successCb) self.successCb({ success: true, id: id, value: value.trim() });
+          }, 300);
+        },
+        deleteMasterDataItem: function(id) {
+          var self = this;
+          setTimeout(function() {
+            ['companies', 'brands', 'agents'].forEach(function(k) {
+              self._mockMasterData[k] = (self._mockMasterData[k] || []).filter(function(x) { return x.id !== id; });
+            });
+            if(self.successCb) self.successCb({ success: true, id: id });
+          }, 300);
+        }
+      }
+    }
+  };
+</script>
+</head>
+  <body>
+    
+    <div id="app-container">
+      
+      <!-- Sidebar -->
+      <!-- ROYAL MANAGER: Sidebar (Redesign) -->
+<aside id="sidebar">
+  <div class="logo">
+    <span class="material-symbols-outlined icon">balance</span>
+    <div class="text-wrapper">
+      <span class="title">Royal Manager</span>
+      <span class="subtitle">Legal &bull; IP &bull; Company</span>
+    </div>
+  </div>
+  
+  <div class="nav-menu">
+    <a href="#" class="nav-item active" data-route="dashboard">
+      <span class="material-symbols-outlined">home</span>
+      <span class="nav-text">Dashboard</span>
+    </a>
+    
+    <!-- Trademark Group -->
+    <a href="#" class="nav-item open" onclick="this.classList.toggle('open'); document.getElementById('tm-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">copyright</span>
+      <span class="nav-text">Trademark</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu open" id="tm-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Active">Active Trademarks</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-New Application">New Application</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Opposition">Opposition</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Rectification">Rectification</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Renewal">Renewal</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Hearing">Hearing</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Other">Other</a>
+    </div>
+    
+    <!-- Copyright Group -->
+    <a href="#" class="nav-item" onclick="this.classList.toggle('open'); document.getElementById('cp-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">copyright</span>
+      <span class="nav-text">Copyright</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu" id="cp-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Active">Active Copyrights</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-New Application">New Application</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Objection / Reply">Objections / Reply</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Hearing">Hearing</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Other">Other</a>
+    </div>
+    
+    <!-- Company Group -->
+    <a href="#" class="nav-item" onclick="this.classList.toggle('open'); document.getElementById('co-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">domain</span>
+      <span class="nav-text">Company Tasks</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu" id="co-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-ROC">Compliance / ROC</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-Agr">Agreements</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-Lic">Licences</a>
+    </div>
+    
+    <a href="#" class="nav-item" data-route="tasks">
+      <span class="material-symbols-outlined">task_alt</span>
+      <span class="nav-text">My Tasks</span>
+    </a>
+    <a href="#" class="nav-item" data-route="settings">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="nav-text">Settings</span>
+    </a>
+  </div>
+  
+  <div class="sidebar-quote">
+    "Organise Today<br>Win Tomorrow"
+    <span class="author">&mdash; Royal Momin</span>
+  </div>
+</aside>
+
+      
+      <!-- Main Content -->
+      <main id="main-content">
+        <!-- Header -->
+        <!-- ROYAL MANAGER: Header (Redesign) -->
+<header id="header">
+  <div class="search-bar">
+    <span class="material-symbols-outlined">search</span>
+    <input type="text" placeholder="Search matters, application no., task, keyword...">
+  </div>
+  
+  <div class="header-actions">
+    <div class="notification">
+      <span class="material-symbols-outlined" style="font-size: 28px; color: var(--text-main);">notifications</span>
+      <span class="badge">4</span>
+    </div>
+    
+    <div class="user-profile">
+      <div class="user-avatar">RM</div>
+      <div class="user-info">
+        <span class="user-name">Royal Momin <span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle; color:#9ca3af;">expand_more</span></span>
+        <span class="user-role">Admin</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+        
+        <!-- View Container (Pages are loaded here) -->
+        <div id="view-container">
+          <!-- Views included statically, hidden by default -->
+          <!-- ROYAL MANAGER: Dashboard View (Redesign) -->
+<div id="view-dashboard" class="view-section">
+  
+  <div class="dash-banner">
+    <h1>Good Afternoon, Royal!</h1>
+    <p>Keep your legal and company work on track.</p>
+    <div class="handwritten">Plan<br>Track<br>Achieve</div>
+  </div>
+  
+  <div class="top-stats-grid">
+    <div class="stat-card sc-total">
+      <div class="icon-wrap"><span class="material-symbols-outlined">description</span></div>
+      <div class="info">
+        <div class="title">Total Matters</div>
+        <div class="count" id="dash-total">-</div>
+        <div class="desc">All active & closed</div>
+      </div>
+    </div>
+    <div class="stat-card sc-process">
+      <div class="icon-wrap"><span class="material-symbols-outlined">sync</span></div>
+      <div class="info">
+        <div class="title">Under Process</div>
+        <div class="count" id="dash-process">-</div>
+        <div class="desc">In progress</div>
+      </div>
+    </div>
+    <div class="stat-card sc-pending">
+      <div class="icon-wrap"><span class="material-symbols-outlined">schedule</span></div>
+      <div class="info">
+        <div class="title">Pending</div>
+        <div class="count" id="dash-pending">-</div>
+        <div class="desc">Awaiting action</div>
+      </div>
+    </div>
+    <div class="stat-card sc-overdue">
+      <div class="icon-wrap"><span class="material-symbols-outlined">warning</span></div>
+      <div class="info">
+        <div class="title">Overdue</div>
+        <div class="count" id="dash-overdue">-</div>
+        <div class="desc">Needs immediate attention</div>
+      </div>
+    </div>
+    <div class="stat-card sc-completed">
+      <div class="icon-wrap"><span class="material-symbols-outlined">check_circle</span></div>
+      <div class="info">
+        <div class="title">Completed</div>
+        <div class="count" id="dash-completed">-</div>
+        <div class="desc">Successfully closed</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-grid">
+    <div class="cat-card cat-tm">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Trademark')">
+        <div class="left">
+          <div class="icon-wrap">R</div>
+          <div class="title">Trademark</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="tm-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Trademark-Active')"><span>Active Trademarks</span> <div class="num-wrap"><span id="tm-reg">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-New Application')"><span>New Applications</span> <div class="num-wrap"><span id="tm-new">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Opposition')"><span>Oppositions</span> <div class="num-wrap"><span id="tm-opp">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Rectification')"><span>Rectifications</span> <div class="num-wrap"><span id="tm-rect">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Renewal')"><span>Renewals</span> <div class="num-wrap"><span id="tm-ren">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Hearing')"><span>Hearings</span> <div class="num-wrap"><span id="tm-hear">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Trademark-Other')"><span>Others</span> <div class="num-wrap"><span id="tm-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+    
+    <div class="cat-card cat-cp">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Copyright')">
+        <div class="left">
+          <div class="icon-wrap">C</div>
+          <div class="title">Copyright</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="cp-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Copyright-Active')"><span>Active Copyrights</span> <div class="num-wrap"><span id="cp-reg">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-New Application')"><span>New Applications</span> <div class="num-wrap"><span id="cp-new">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Objection / Reply')"><span>Objections / Reply</span> <div class="num-wrap"><span id="cp-obj">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Hearing')"><span>Hearings</span> <div class="num-wrap"><span id="cp-hear">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Copyright-Other')"><span>Others</span> <div class="num-wrap"><span id="cp-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+    
+    <div class="cat-card cat-co">
+      <div class="cat-card-header" style="cursor:pointer;" onclick="App.navigateTo('matters', 'Company Tasks')">
+        <div class="left">
+          <div class="icon-wrap"><span class="material-symbols-outlined" style="font-size:24px;">domain</span></div>
+          <div class="title">Company Tasks</div>
+        </div>
+        <div class="right" style="display:flex; gap:12px; align-items:center;">
+          <div class="count" id="co-total">-</div>
+          <span class="material-symbols-outlined arrow">chevron_right</span>
+        </div>
+      </div>
+      <ul class="cat-list">
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Compliance / ROC')"><span>Compliance / ROC</span> <div class="num-wrap"><span id="co-roc">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Agreements')"><span>Agreements</span> <div class="num-wrap"><span id="co-agr">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Licences')"><span>Licences</span> <div class="num-wrap"><span id="co-lic">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Renewals')"><span>Renewals</span> <div class="num-wrap"><span id="co-ren">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Payments')"><span>Payments</span> <div class="num-wrap"><span id="co-pay">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+        <li onclick="App.navigateTo('matters', 'Company Tasks-Other')"><span>Others</span> <div class="num-wrap"><span id="co-other">-</span> <span class="material-symbols-outlined">chevron_right</span></div></li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Dashboard Table Section -->
+  <div class="dash-table-section">
+    <div class="table-header">
+      <h2>All Matters 
+        <div class="table-tabs">
+          <div class="tab active" onclick="App.renderMattersTable(null, 'All');">All (112)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Under Process');">Under Process (48)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Pending');">Pending (22)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Overdue');" style="color:var(--status-overdue)">Overdue (3)</div>
+          <div class="tab" onclick="App.renderMattersTable(null, 'Completed');">Completed (39)</div>
+        </div>
+      </h2>
+      <button class="btn btn-primary" onclick="App.navigateTo('matter-form')">+ Add New</button>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assigned To</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="matters-tbody">
+          <!-- JS will populate -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="quick-actions-wrap">
+    <h3>Quick Actions</h3>
+    <div class="qa-grid">
+      <button class="qa-btn qa-tm" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Trademark Application
+      </button>
+      <button class="qa-btn qa-opp" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Opposition
+      </button>
+      <button class="qa-btn qa-cp" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Copyright Application
+      </button>
+      <button class="qa-btn qa-co" onclick="App.navigateTo('matter-form')">
+        <div class="icon">+</div> New Company Task
+      </button>
+      
+      <div class="qa-promo">
+        <span class="material-symbols-outlined leaf">energy_savings_leaf</span>
+        <div class="text">Stay Organised<br>Stay Ahead</div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+          <!-- ROYAL MANAGER: MatterList View (Redesign) -->
+<div id="view-matters" class="view-section">
+  
+  <div class="dash-table-section">
+    <div class="table-header" style="margin-bottom: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0;">
+          <span id="matters-page-title" style="font-size: 22px; color: var(--text-dark); font-weight: 700;">All Matters</span>
+        </h2>
+        <span id="matters-page-subtitle" style="font-size: 13px; color: var(--text-muted);"></span>
+      </div>
+      
+      <div style="display:flex; gap:16px; align-items: center;">
+        <div id="standard-search-wrap" class="search-bar" style="width: 260px;">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="standard-search-input" placeholder="Search this list..." oninput="App.applyStandardSearch(this.value)">
+        </div>
+        <button class="btn btn-primary" onclick="App.navigateTo('matter-form')">+ Add New</button>
+      </div>
+    </div>
+    
+    <!-- Standard Tabs (Visible for standard views, hidden for Registration views) -->
+    <div id="standard-tabs-wrap" style="margin-bottom: 20px;">
+      <div class="table-tabs" style="margin-left: 0; font-size: 14px;">
+        <div class="tab active" onclick="App.renderMattersTable(window.currentCategoryFilter, 'All');">All</div>
+        <div class="tab" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Under Process');">Under Process</div>
+        <div class="tab" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Pending');">Pending</div>
+        <div class="tab" id="tab-overdue" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Overdue');" style="color:var(--status-overdue)">Overdue</div>
+        <div class="tab" id="tab-completed" onclick="App.renderMattersTable(window.currentCategoryFilter, 'Completed');">Completed</div>
+      </div>
+    </div>
+
+    <!-- Active Trademarks Dedicated Filters -->
+    <div class="reg-filter-box hidden" id="tm-reg-filters">
+      <div class="reg-filter-header">
+        <div class="reg-filter-title">
+          <span class="material-symbols-outlined" style="color:var(--primary); font-size:20px;">filter_alt</span>
+          Filter Active Trademarks
+          <span class="badge bg-green text-green" style="font-size:11px; margin-left:8px;">Status: Registered</span>
+        </div>
+        <button type="button" class="btn-reset-filters" onclick="App.resetRegFilters('TM')">
+          <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span> Reset
+        </button>
+      </div>
+      <div class="reg-filter-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 550px;">
+        <div class="filter-item">
+          <label>Company</label>
+          <select id="tm-filt-company" onchange="App.applyRegFilters()">
+            <option value="">All Companies</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Class</label>
+          <select id="tm-filt-class" onchange="App.applyRegFilters()">
+            <option value="">All Classes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Copyrights Dedicated Filters -->
+    <div class="reg-filter-box hidden" id="cp-reg-filters">
+      <div class="reg-filter-header">
+        <div class="reg-filter-title">
+          <span class="material-symbols-outlined" style="color:var(--primary); font-size:20px;">filter_alt</span>
+          Filter Active Copyrights
+          <span class="badge bg-green text-green" style="font-size:11px; margin-left:8px;">Status: Registered</span>
+        </div>
+        <button type="button" class="btn-reset-filters" onclick="App.resetRegFilters('CP')">
+          <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span> Reset
+        </button>
+      </div>
+      <div class="reg-filter-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 320px;">
+        <div class="filter-item">
+          <label>Company</label>
+          <select id="cp-filt-company" onchange="App.applyRegFilters()">
+            <option value="">All Companies</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead id="matters-page-thead">
+          <tr>
+            <th style="width: 40px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="matters-page-tbody">
+          <!-- JS will populate -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+          <!-- ROYAL MANAGER: Modern MatterForm View -->
+<div id="view-matter-form" class="view-section">
+  <div class="modern-form-container">
+    
+    <!-- Top Header Navigation & Action Bar -->
+    <div class="form-header-bar">
+      <div class="form-header-left">
+        <button type="button" class="btn-back-circle" title="Back to Matters" onclick="App.navigateTo('matters')">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div class="form-header-title-group">
+          <h2>
+            <span id="matter-form-title">New Matter Registration</span>
+            <span id="matter-form-badge" class="form-badge-pill">New Entry</span>
+          </h2>
+          <p id="matter-form-subtitle">Register and manage intellectual property, track critical deadlines, and configure reminders.</p>
+        </div>
+      </div>
+      <div class="form-header-actions" style="display:flex; gap:10px; align-items:center;">
+        <button type="button" class="btn btn-secondary" onclick="App.navigateTo('matters')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('matterForm').requestSubmit()">
+          <span class="material-symbols-outlined" style="font-size:18px;">save</span> Save Matter
+        </button>
+      </div>
+    </div>
+
+    <!-- Form Element -->
+    <form id="matterForm" onsubmit="event.preventDefault(); App.saveMatterForm();">
+      <input type="hidden" id="matter-id">
+
+      <!-- SECTION 1: Category & Identification -->
+      <div class="form-section-card">
+        <div class="form-section-header">
+          <div class="section-icon-wrap sec-icon-blue">
+            <span class="material-symbols-outlined">edit_document</span>
+          </div>
+          <div class="section-title-wrap">
+            <h3>Category & Matter Details</h3>
+            <p>Select category to adapt fields dynamically for Trademarks, Copyrights, or Company matters</p>
+          </div>
+        </div>
+
+        <div class="form-grid-12">
+          <!-- Category -->
+          <div class="form-field col-4">
+            <label for="f-category">
+              <span>Category <span class="req">*</span></span>
+              <span class="field-hint-text">Governs form fields</span>
+            </label>
+            <select id="f-category" class="modern-input" onchange="App.toggleMatterFields()" required>
+              <option value="Trademark">Trademark</option>
+              <option value="Copyright">Copyright</option>
+              <option value="Company Tasks">Company Tasks</option>
+              <option value="General Tasks">General Tasks</option>
+            </select>
+          </div>
+
+          <!-- Type -->
+          <div class="form-field col-4">
+            <label for="f-type">
+              <span>Matter Type / Action</span>
+              <span class="field-hint-text">Select or type custom</span>
+            </label>
+            <input type="text" id="f-type" class="modern-input" placeholder="e.g. Opposition, Registration, New Application" list="typeList">
+            <datalist id="typeList">
+              <option value="Total TM Registration">
+              <option value="Registration">
+              <option value="Total Copyright Application">
+              <option value="New Application">
+              <option value="Opposition">
+              <option value="Rectification">
+              <option value="Renewal">
+              <option value="Objection / Reply">
+              <option value="Hearing">
+              <option value="Compliance / ROC">
+              <option value="Agreements">
+              <option value="Licences">
+            </datalist>
+          </div>
+
+          <!-- Status -->
+          <div class="form-field col-4">
+            <label for="f-status">
+              <span>Current Status <span class="req">*</span></span>
+            </label>
+            <select id="f-status" class="modern-input" required>
+              <option value="Pending">Pending</option>
+              <option value="Under Process">Under Process</option>
+              <option value="Waiting for Client">Waiting for Client</option>
+              <option value="Waiting for Registry / Court">Waiting for Registry / Court</option>
+              <option value="Completed">Completed</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+
+          <!-- Company / Proprietor (Master Data) -->
+          <div class="form-field col-6" id="group-company">
+            <label for="f-company">
+              <span>Company / Proprietor</span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-company" class="modern-input">
+              <option value="">-- Select Company --</option>
+            </select>
+          </div>
+
+          <!-- Brand Name (Trademark only: Master Data dropdown) -->
+          <div class="form-field col-6" id="group-brand">
+            <label for="f-brand">
+              <span>Brand Name <span class="req">*</span></span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-brand" class="modern-input" onchange="if(document.getElementById('f-name')) document.getElementById('f-name').value = this.value;">
+              <option value="">-- Select Brand --</option>
+            </select>
+          </div>
+
+          <!-- Matter / Task Name (For Copyright / Company Tasks / General Tasks) -->
+          <div class="form-field col-6" id="group-matter-name" style="display:none;">
+            <label for="f-name">
+              <span id="label-matter-name">Matter Title <span class="req">*</span></span>
+              <span class="field-hint-text">Display title</span>
+            </label>
+            <input type="text" id="f-name" class="modern-input" placeholder="e.g. Software Code Copyright, Annual Return MGT-7">
+          </div>
+
+          <!-- Combined Reg / Application No (Single unified field) -->
+          <div class="form-field col-6" id="group-appno">
+            <label for="f-appno">
+              <span id="label-appno">Reg / Application No.</span>
+              <span class="field-hint-text">Registration or Case No.</span>
+            </label>
+            <input type="text" id="f-appno" class="modern-input" placeholder="e.g. TM-449120 / 6611916">
+          </div>
+
+          <!-- Class (Dynamic: Trademark only) -->
+          <div class="form-field col-6" id="group-class">
+            <label for="f-class">
+              <span>Class</span>
+              <span class="field-hint-text">Trademark Class</span>
+            </label>
+            <input type="text" id="f-class" class="modern-input" placeholder="e.g. Class 35, Class 9 & 42">
+          </div>
+
+          <!-- Agent / Attorney (Dynamic: Trademark & Copyright) -->
+          <div class="form-field col-6" id="group-agent">
+            <label for="f-agent">
+              <span>Agent / Attorney</span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-agent" class="modern-input">
+              <option value="">-- Select Agent --</option>
+            </select>
+          </div>
+
+          <!-- Dates: Registration Date & Renewal Due Date (Dynamic: Trademark only) -->
+          <div class="form-field col-3" id="group-regdate">
+            <label for="f-regdate">
+              <span>Registration Date</span>
+            </label>
+            <input type="date" id="f-regdate" class="modern-input">
+          </div>
+
+          <div class="form-field col-3" id="group-renewdate">
+            <label for="f-renewdate">
+              <span>Renewal Due Date</span>
+            </label>
+            <input type="date" id="f-renewdate" class="modern-input">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Action, Deadlines & Google Calendar -->
+      <div class="form-section-card" style="border-color:#fde68a;">
+        <div class="form-section-header" style="border-bottom-color:#fef3c7;">
+          <div class="section-icon-wrap sec-icon-amber">
+            <span class="material-symbols-outlined">notifications_active</span>
+          </div>
+          <div class="section-title-wrap">
+            <h3>Immediate Action & Smart Reminders</h3>
+            <p>Schedule upcoming filings, statutory deadlines, and automated Google Calendar sync</p>
+          </div>
+        </div>
+
+        <div class="form-grid-12">
+          <!-- Next Action -->
+          <div class="form-field col-8">
+            <label for="f-nextaction">
+              <span>Next Action Required</span>
+              <span class="field-hint-text">What needs to be filed or reviewed?</span>
+            </label>
+            <input type="text" id="f-nextaction" class="modern-input" placeholder="e.g. File Evidence in Support of Opposition / Pay Renewal Fee">
+          </div>
+
+          <!-- Next Date -->
+          <div class="form-field col-4">
+            <label for="f-nextdate">
+              <span>Deadline / Next Date</span>
+              <span class="field-hint-text">Statutory due date</span>
+            </label>
+            <input type="date" id="f-nextdate" class="modern-input" style="font-weight: 600; color: #b45309;">
+          </div>
+
+          <!-- Reminder Config Box -->
+          <div class="col-12">
+            <div class="reminder-accent-box">
+              <div class="reminder-toggle-row">
+                <div class="reminder-toggle-label" onclick="var chk = document.getElementById('f-reminder'); chk.checked = !chk.checked;">
+                  <label class="switch-toggle" onclick="event.stopPropagation();">
+                    <input type="checkbox" id="f-reminder" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                  <div>
+                    <div style="font-weight:600; font-size:13.5px; color:#92400e; display:flex; align-items:center; gap:6px;">
+                      <span class="material-symbols-outlined" style="font-size:18px;">event</span>
+                      Google Calendar Auto-Sync
+                    </div>
+                    <div style="font-size:12px; color:#b45309;">Creates and updates an event on your connected Google Calendar with deadline alerts.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid-12" style="margin-top:10px;">
+                <div class="form-field col-6">
+                  <label for="f-remdays" style="color:#92400e;">
+                    <span>Alert Schedule (days prior, comma separated)</span>
+                  </label>
+                  <input type="text" id="f-remdays" class="modern-input" value="7,3,1" placeholder="e.g. 7,3,1" style="background:#ffffff; border-color:#fcd34d;">
+                </div>
+                <div class="col-6" style="display:flex; flex-direction:column; justify-content:center;">
+                  <div style="font-size:11.5px; font-weight:600; color:#92400e; margin-bottom:4px;">Quick Presets:</div>
+                  <div class="reminder-presets">
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '7,3,1'">7, 3, 1 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '15,7,1'">15, 7, 1 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '30,15,7'">30, 15, 7 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '1'">1 Day (Urgent)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ACTION FOOTER -->
+      <div class="form-action-footer">
+        <div class="left-info">
+          <span class="material-symbols-outlined" style="font-size:18px; color:#10b981;">check_circle</span>
+          <span>All changes will be securely synchronized to your database.</span>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button type="button" class="btn btn-secondary" style="padding:10px 20px;" onclick="App.navigateTo('matters')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="padding:10px 28px; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(0,98,255,0.25);">
+            <span class="material-symbols-outlined" style="font-size:19px;">save</span> Save Matter
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+          <!-- ROYAL MANAGER: MatterDetails View -->
+<div id="view-matter-details" class="view-section">
+  
+  <div class="table-header">
+    <h2 style="display:flex; align-items:center; gap:12px;">
+      <span class="material-symbols-outlined" style="cursor:pointer;" onclick="App.navigateTo('matters')">arrow_back</span>
+      <span id="md-title">Loading...</span>
+    </h2>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" onclick="App.navigateTo('matter-form', currentMatterId)">
+        <span class="material-symbols-outlined">edit</span> Edit
+      </button>
+    </div>
+  </div>
+
+  <div class="category-grid" style="grid-template-columns: 2fr 1fr; gap:24px;">
+    
+    <!-- Left Column: Details -->
+    <div style="display:flex; flex-direction:column; gap:24px;">
+      <div class="card">
+        <h3 style="margin-bottom:16px; color:var(--primary); font-size:16px;">Matter Information</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div><label class="text-muted">Application / Case No.</label><div id="md-appno" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Registration No.</label><div id="md-regno" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Class</label><div id="md-class" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Proprietor / Owner</label><div id="md-owner" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Registration Date</label><div id="md-regdate" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Renewal Due Date</label><div id="md-renewdate" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Category & Type</label><div id="md-type" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Status</label><div id="md-status" style="font-weight:500;">-</div></div>
+
+        </div>
+      </div>
+      
+      <div class="card" style="border-left: 4px solid #f59e0b;">
+        <h3 style="margin-bottom:16px; font-size:16px; display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="color:#f59e0b;">schedule</span> 
+          Next Action & Deadline
+        </h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div><label class="text-muted">Action Required</label><div id="md-nextaction" style="font-weight:500; font-size:16px;">-</div></div>
+          <div><label class="text-muted">Deadline Date</label><div id="md-nextdate" style="font-weight:500; font-size:16px; color:#d97706;">-</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:16px; color:var(--primary); font-size:16px;">Connected Services</h3>
+        <div style="display:flex; gap:16px;">
+          <span class="text-muted">No external services connected.</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Activity Log -->
+    <div>
+      <div class="card" style="height: 100%;">
+        <h3 style="margin-bottom:16px; color:var(--text-dark); font-size:16px;">Activity Log</h3>
+        <ul id="md-activity-log" style="list-style:none; margin:0; padding:0;">
+          <!-- JS will populate -->
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+          <!-- ROYAL MANAGER: TaskList View -->
+<div id="view-tasks" class="view-section">
+  <div class="table-header">
+    <h2>My Tasks</h2>
+    <button class="btn btn-primary" onclick="document.getElementById('task-form-card').classList.toggle('hidden')">+ Add Task</button>
+  </div>
+  
+  <div id="task-form-card" class="card hidden" style="margin-bottom: 20px;">
+    <form onsubmit="event.preventDefault(); App.saveTaskForm();">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Task Name *</label>
+          <input type="text" id="t-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" id="t-date" class="form-control" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save Task</button>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('task-form-card').classList.add('hidden')">Cancel</button>
+    </form>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 40px;"></th>
+          <th>Task Name</th>
+          <th>Due Date</th>
+          <th>Status</th>
+
+        </tr>
+      </thead>
+      <tbody id="tasks-tbody">
+        <!-- JS will populate -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+          <!-- ROYAL MANAGER: Settings View -->
+<div id="view-settings" class="view-section">
+  
+  <div class="table-header" style="margin-bottom: 24px;">
+    <div>
+      <h2 style="font-size: 22px; color: var(--text-dark); font-weight: 700; margin: 0;">Settings & Master Data</h2>
+      <p class="text-muted" style="font-size: 13px; margin-top: 4px;">
+        Manage companies, brands, and agents individually. Saved values immediately update dropdown options across all relevant modules.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Master Data Management: 3 Separate Sections in Responsive Grid -->
+  <div class="md-sections-grid">
+    
+    <!-- 1. COMPANIES MANAGEMENT SECTION -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-company">
+            <span class="material-symbols-outlined" style="font-size: 20px;">domain</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Companies</span>
+              <span class="md-badge-count" id="badge-companies-count">0</span>
+            </div>
+            <div class="md-panel-desc">4–10 client & proprietor companies</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Company')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Company
+        </button>
+      </div>
+      
+      <div class="md-items-scrollable" id="md-companies-list" style="max-height: 380px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- 2. BRAND NAMES MANAGEMENT SECTION (Designed for large quantity & searchability) -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-brand">
+            <span class="material-symbols-outlined" style="font-size: 20px;">sell</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Brand Names</span>
+              <span class="md-badge-count" id="badge-brands-count">0</span>
+            </div>
+            <div class="md-panel-desc" id="brand-count-desc">All registered marks & brands</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Brand')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Brand
+        </button>
+      </div>
+      
+      <!-- Real-Time Search Box -->
+      <div style="margin-bottom: 12px;">
+        <div class="md-search-box" style="width: 100%; max-width: 100%;">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" id="brand-search-input" placeholder="Search brands in real-time..." oninput="App.filterBrands(this.value)">
+        </div>
+      </div>
+
+      <div class="md-items-scrollable" id="md-brands-list" style="max-height: 330px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+    <!-- 3. AGENTS MANAGEMENT SECTION -->
+    <div class="md-section-card">
+      <div class="md-panel-header">
+        <div class="md-panel-title-wrap">
+          <div class="md-item-icon md-icon-agent">
+            <span class="material-symbols-outlined" style="font-size: 20px;">badge</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="md-panel-title">Agents</span>
+              <span class="md-badge-count" id="badge-agents-count">0</span>
+            </div>
+            <div class="md-panel-desc">2–5 legal agents & assignees</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.openMasterModal('Agent')">
+          <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">add</span> Add Agent
+        </button>
+      </div>
+
+      <div class="md-items-scrollable" id="md-agents-list" style="max-height: 380px; flex: 1;">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- 4. GOOGLE CALENDAR API SETUP & INTEGRATION SECTION -->
+  <div class="gcal-setup-wrapper" style="max-width: 720px; margin-top: 10px;">
+    
+    <!-- Connection Status Banner -->
+    <div class="gcal-status-banner" id="gcal-status-banner">
+      <div class="gcal-status-indicator">
+        <div class="gcal-status-dot" id="gcal-status-dot"></div>
+        <span class="gcal-status-text" id="gcal-status-text">Not Connected</span>
+      </div>
+      <div class="gcal-status-meta" id="gcal-status-meta">Set up your Google Calendar API to sync deadlines and reminders</div>
+    </div>
+
+    <!-- API Configuration Card -->
+    <div class="card gcal-card" style="margin-top: 16px;">
+      <div class="md-panel-header" style="margin-bottom: 20px;">
+        <div class="md-panel-title-wrap">
+          <div class="gcal-icon-wrap">
+            <span class="material-symbols-outlined" style="font-size: 22px;">key</span>
+          </div>
+          <div>
+            <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">API Configuration</h3>
+            <p class="text-muted" style="font-size: 12px; margin: 2px 0 0 0;">Enter your Google Cloud Console API credentials</p>
+          </div>
+        </div>
+        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="gcal-help-link">
+          <span class="material-symbols-outlined" style="font-size: 14px;">open_in_new</span>
+          Google Cloud Console
+        </a>
+      </div>
+
+      <!-- Setup Instructions Collapsible -->
+      <div class="gcal-instructions-toggle" onclick="App.toggleCalendarInstructions()">
+        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">help_outline</span>
+        <span style="font-size: 13px; font-weight: 500; color: var(--primary);">How to get your API credentials?</span>
+        <span class="material-symbols-outlined gcal-chevron" id="gcal-instructions-chevron" style="font-size: 18px; color: var(--text-muted); margin-left: auto;">expand_more</span>
+      </div>
+      <div class="gcal-instructions-body hidden" id="gcal-instructions-body">
+        <ol class="gcal-steps-list">
+          <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a> and create or select a project.</li>
+          <li>Navigate to <strong>APIs & Services → Library</strong> and enable the <strong>Google Calendar API</strong>.</li>
+          <li>Go to <strong>APIs & Services → Credentials</strong> and click <strong>Create Credentials → OAuth 2.0 Client ID</strong>.</li>
+          <li>Set the application type to <strong>Web application</strong>.</li>
+          <li>Add your Apps Script deployment URL as an authorized redirect URI.</li>
+          <li>Copy the <strong>Client ID</strong> and <strong>Client Secret</strong> and paste them below.</li>
+        </ol>
+      </div>
+
+      <form id="gcalApiForm" onsubmit="event.preventDefault(); App.saveGoogleCalendarApi();">
+        <div class="form-group" style="margin-top: 16px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            OAuth Client ID <span style="color: #ef4444;">*</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">fingerprint</span>
+            <input type="text" id="gcal-client-id" class="form-control gcal-input" placeholder="e.g. 123456789-xxxxx.apps.googleusercontent.com" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            OAuth Client Secret <span style="color: #ef4444;">*</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">lock</span>
+            <input type="password" id="gcal-client-secret" class="form-control gcal-input" placeholder="Enter client secret" autocomplete="new-password">
+            <button type="button" class="gcal-toggle-pass" onclick="App.toggleSecretVisibility()" title="Show/Hide">
+              <span class="material-symbols-outlined" id="gcal-eye-icon" style="font-size: 18px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">
+            Calendar ID
+            <span class="field-hint-text" style="font-size: 11px; font-weight: 400; color: var(--text-muted);">Leave blank for primary</span>
+          </label>
+          <div class="gcal-input-wrap">
+            <span class="material-symbols-outlined gcal-input-icon">calendar_month</span>
+            <input type="text" id="gcal-calendar-id" class="form-control gcal-input" placeholder="primary (or your-calendar-id@group.calendar.google.com)">
+          </div>
+        </div>
+
+        <div class="gcal-btn-row">
+          <button type="submit" class="btn btn-primary gcal-btn-connect" id="gcal-btn-connect">
+            <span class="material-symbols-outlined" style="font-size: 18px;">link</span>
+            Connect & Authorize
+          </button>
+          <button type="button" class="btn btn-secondary gcal-btn-test" onclick="App.testCalendarConnection()" id="gcal-btn-test">
+            <span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span>
+            Test Connection
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sync Settings Card -->
+    <div class="card gcal-card" style="margin-top: 16px;">
+      <form id="calendarSettingsForm" onsubmit="event.preventDefault(); App.saveCalendarSettingsForm();">
+        <div class="md-panel-header" style="margin-bottom: 20px;">
+          <div class="md-panel-title-wrap">
+            <div class="gcal-icon-wrap gcal-icon-sync">
+              <span class="material-symbols-outlined" style="font-size: 22px;">sync</span>
+            </div>
+            <div>
+              <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Sync & Reminders</h3>
+              <p class="text-muted" style="font-size: 12px; margin: 2px 0 0 0;">Configure calendar sync behavior and deadline reminders</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto Sync Toggle -->
+        <div class="gcal-toggle-section">
+          <div class="gcal-toggle-row">
+            <div class="gcal-toggle-info">
+              <span class="material-symbols-outlined" style="font-size: 20px; color: #2563eb;">autorenew</span>
+              <div>
+                <div style="font-size: 13.5px; font-weight: 600; color: var(--text-dark);">Auto-Sync Deadlines</div>
+                <div style="font-size: 11.5px; color: var(--text-muted);">Automatically create & update calendar events when matters change</div>
+              </div>
+            </div>
+            <label class="switch-toggle">
+              <input type="checkbox" id="gcal-auto-sync" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Sync Options Grid -->
+        <div class="gcal-options-grid">
+          <div class="form-group">
+            <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Default Calendar</label>
+            <select class="form-control" id="setting-calendar">
+              <option value="Primary Calendar">Primary Calendar</option>
+              <option value="Royal Manager Dedicated Calendar">Royal Manager Dedicated Calendar</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Sync Interval</label>
+            <select class="form-control" id="gcal-sync-interval">
+              <option value="realtime">Real-time (on save)</option>
+              <option value="hourly">Every Hour</option>
+              <option value="daily">Once a Day</option>
+              <option value="manual">Manual Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 4px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155;">Default Reminder Days</label>
+          <input type="text" id="setting-remdays" class="form-control" value="7,3,1" placeholder="e.g. 7,3,1">
+          <small class="text-muted" style="display: block; margin-top: 4px;">Comma-separated days before deadline. e.g. <code style="background:#f1f5f9; padding:1px 5px; border-radius:3px; font-size:11px;">7,3,1</code> will remind you 7 days, 3 days, and 1 day before.</small>
+        </div>
+
+        <!-- Sync What Checkboxes -->
+        <div class="gcal-sync-what" style="margin-top: 16px;">
+          <label style="font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 8px; display:block;">Sync Events For</label>
+          <div class="gcal-checkbox-grid">
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-deadlines" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#ef4444;">schedule</span>
+                Matter Deadlines
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-hearings" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#8b5cf6;">gavel</span>
+                Hearings
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-renewals" checked>
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#f59e0b;">autorenew</span>
+                Renewal Dates
+              </span>
+            </label>
+            <label class="gcal-checkbox-item">
+              <input type="checkbox" id="gcal-sync-tasks">
+              <span class="gcal-check-label">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#10b981;">task_alt</span>
+                Tasks
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="gcal-action-footer">
+          <button type="button" class="btn gcal-btn-manual-sync" onclick="App.manualCalendarSync()">
+            <span class="material-symbols-outlined" style="font-size: 18px;">cloud_sync</span>
+            Sync Now
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined" style="font-size: 18px;">save</span>
+            Save Calendar Settings
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Last Sync Info -->
+    <div class="gcal-last-sync-bar" id="gcal-last-sync-bar">
+      <span class="material-symbols-outlined" style="font-size: 16px; color: var(--text-muted);">update</span>
+      <span class="gcal-last-sync-text" id="gcal-last-sync-text">Last sync: Never</span>
+      <span class="gcal-sync-count" id="gcal-sync-count">0 events synced</span>
+    </div>
+
+  </div>
+
+  <!-- Modal Dialog for Add/Edit Individual Master Item -->
+  <div id="md-modal" class="md-modal-overlay hidden" onclick="if(event.target === this) App.closeMasterModal();">
+    <div class="md-modal-dialog">
+      <div class="md-modal-header">
+        <div class="md-modal-title" id="md-modal-title">Add Item</div>
+        <button type="button" class="md-btn-icon" onclick="App.closeMasterModal()" title="Close">
+          <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+        </button>
+      </div>
+      <form id="md-modal-form" onsubmit="event.preventDefault(); App.saveMasterItem();">
+        <div class="md-modal-body">
+          <input type="hidden" id="md-modal-type">
+          <input type="hidden" id="md-modal-id">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="md-modal-label">Name *</label>
+            <input type="text" id="md-modal-input" class="form-control" placeholder="Enter name" required autocomplete="off">
+          </div>
+        </div>
+        <div class="md-modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeMasterModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="md-modal-save-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+
+        </div>
+      </main>
+      
+    </div>
+
+    <!-- Global Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script>
+/* 
+ * ROYAL MANAGER
+ * Frontend Logic & Routing
+ */
+
+var App = {
+  currentView: 'dashboard',
+  matters: [],
+  tasks: [],
+  settings: {},
+  masterData: {
+    companies: [],
+    brands: [],
+    agents: []
+  },
+  currentMasterTab: 'companies',
+  brandSearchQuery: '',
+  currentMatterId: null,
+  
+  init: function() {
+    this.bindEvents();
+    this.loadSettings();
+    this.loadMasterData();
+    this.navigateTo('dashboard');
+  },
+  
+  bindEvents: function() {
+    document.querySelectorAll('[data-route]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        var route = this.getAttribute('data-route');
+        var param = this.getAttribute('data-param');
+        App.navigateTo(route, param);
+      });
+    });
+    
+    var sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('open');
+      });
+    }
+  },
+  
+  navigateTo: function(viewId, param) {
+    document.querySelectorAll('.view-section').forEach(function(el) { el.classList.remove('active'); });
+    
+    document.querySelectorAll('.nav-item').forEach(function(el) {
+      el.classList.remove('active');
+      if(el.getAttribute('data-route') === viewId && !el.classList.contains('sub-item')) {
+        el.classList.add('active');
+      }
+    });
+    
+    var viewEl = document.getElementById('view-' + viewId);
+    if (viewEl) viewEl.classList.add('active');
+    
+    this.currentView = viewId;
+    
+    if (viewId === 'dashboard') this.loadDashboard();
+    else if (viewId === 'matters') this.loadMatters(param);
+    else if (viewId === 'matter-form') this.loadMatterForm(param);
+    else if (viewId === 'matter-details') this.loadMatterDetails(param);
+    else if (viewId === 'tasks') this.loadTasks();
+    else if (viewId === 'settings') {
+      this.loadSettings();
+      this.loadMasterData();
+    }
+    
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  },
+  
+  showLoading: function() { document.getElementById('loading-overlay').classList.remove('hidden'); },
+  hideLoading: function() { document.getElementById('loading-overlay').classList.add('hidden'); },
+  
+  showToast: function(message, isError) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.backgroundColor = isError ? '#dc2626' : '#059669';
+    toast.classList.remove('hidden');
+    setTimeout(function() { toast.classList.add('hidden'); }, 3000);
+  },
+  
+  // --- Dashboard ---
+  loadDashboard: function() {
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function(data) {
+        document.getElementById('dash-total').textContent = data.top.total;
+        document.getElementById('dash-process').textContent = data.top.underProcess;
+        document.getElementById('dash-pending').textContent = data.top.pending;
+        document.getElementById('dash-overdue').textContent = data.top.overdue;
+        document.getElementById('dash-completed').textContent = data.top.completed;
+        
+        document.getElementById('tm-total').textContent = data.trademark.total;
+        if (document.getElementById('tm-reg')) document.getElementById('tm-reg').textContent = data.trademark.registration || 0;
+        document.getElementById('tm-new').textContent = data.trademark.newApp;
+        document.getElementById('tm-opp').textContent = data.trademark.opposition;
+        document.getElementById('tm-rect').textContent = data.trademark.rectification;
+        document.getElementById('tm-ren').textContent = data.trademark.renewal;
+        document.getElementById('tm-hear').textContent = data.trademark.hearing;
+        document.getElementById('tm-other').textContent = data.trademark.other;
+        
+        document.getElementById('cp-total').textContent = data.copyright.total;
+        if (document.getElementById('cp-reg')) document.getElementById('cp-reg').textContent = data.copyright.registration || 0;
+        if (document.getElementById('cp-app-total')) document.getElementById('cp-app-total').textContent = data.copyright.totalApp || data.copyright.newApp || 0;
+        document.getElementById('cp-new').textContent = data.copyright.newApp;
+        document.getElementById('cp-obj').textContent = data.copyright.objection;
+        document.getElementById('cp-hear').textContent = data.copyright.hearing;
+        document.getElementById('cp-other').textContent = data.copyright.other;
+        
+        document.getElementById('co-total').textContent = data.company.total;
+        document.getElementById('co-roc').textContent = data.company.compliance;
+        document.getElementById('co-agr').textContent = data.company.agreements;
+        document.getElementById('co-lic').textContent = data.company.licences;
+        document.getElementById('co-ren').textContent = data.company.renewals;
+        document.getElementById('co-pay').textContent = data.company.payments;
+        document.getElementById('co-other').textContent = data.company.other;
+        
+        // Auto load matters for dashboard table
+        App.loadMatters('All', true); 
+      })
+      .withFailureHandler(function(err) {
+        App.hideLoading();
+        App.showToast("Error loading dashboard", true);
+      })
+      .getDashboardData();
+  },
+  
+  // --- Matters ---
+  loadMatters: function(filterParam, isSilentLoad) {
+    if(!isSilentLoad) this.showLoading();
+    
+    var categoryFilter = null;
+    var typeFilter = null;
+    var statusFilter = 'All';
+    
+    if(filterParam && filterParam !== 'All') {
+      if(filterParam.includes('-')) {
+        var parts = filterParam.split('-');
+        categoryFilter = parts[0].trim();
+        typeFilter = parts.slice(1).join('-').trim();
+      } else {
+        categoryFilter = filterParam.trim();
+      }
+    }
+    
+    google.script.run
+      .withSuccessHandler(function(matters) {
+        App.matters = matters;
+        App.renderMattersTable(categoryFilter, statusFilter, typeFilter);
+        App.hideLoading(); // Always hide when done, regardless of who initiated
+      })
+      .withFailureHandler(function(err) {
+        App.hideLoading();
+        App.showToast("Error loading matters", true);
+      })
+      .getAllMatters();
+  },
+  
+  applyStandardSearch: function(query) {
+    window.currentSearchQuery = (query || '').trim();
+    this.renderMattersTable();
+  },
+  
+  applyRegFilters: function() {
+    this.renderMattersTable();
+  },
+  
+  resetRegFilters: function(type) {
+    if (type === 'TM') {
+      var c = document.getElementById('tm-filt-company'); if (c) c.value = '';
+      var cl = document.getElementById('tm-filt-class'); if (cl) cl.value = '';
+    } else if (type === 'CP') {
+      var c = document.getElementById('cp-filt-company'); if (c) c.value = '';
+    }
+    this.renderMattersTable();
+  },
+  
+  renderMattersTable: function(categoryFilter, statusFilter, typeFilter) {
+    if (categoryFilter !== undefined) window.currentCategoryFilter = categoryFilter;
+    if (statusFilter !== undefined) window.currentStatusFilter = statusFilter;
+    if (typeFilter !== undefined) window.currentTypeFilter = typeFilter;
+    
+    var cat = window.currentCategoryFilter;
+    var stat = window.currentStatusFilter || 'All';
+    var typ = window.currentTypeFilter;
+    
+    var isTMReg = (cat === 'Trademark' && (typ === 'Active' || typ === 'Active Trademarks' || typ === 'Registration' || typ === 'Total TM Registration'));
+    var isCPReg = (cat === 'Copyright' && (typ === 'Active' || typ === 'Active Copyrights' || typ === 'Registration' || typ === 'Total Copyright Registration'));
+    
+    // 1. Update Title and Subtitle - "Registration" removed from titles
+    var titleEl = document.getElementById('matters-page-title');
+    var subtitleEl = document.getElementById('matters-page-subtitle');
+    if (titleEl) {
+      if (isTMReg) {
+        titleEl.textContent = 'Active Trademarks';
+        if (subtitleEl) subtitleEl.textContent = 'Registered Trademarks';
+      } else if (isCPReg) {
+        titleEl.textContent = 'Active Copyrights';
+        if (subtitleEl) subtitleEl.textContent = 'Registered Copyrights';
+      } else if (cat && typ) {
+        titleEl.textContent = cat + ' - ' + typ;
+        if (subtitleEl) subtitleEl.textContent = 'Filtered records for ' + cat + ' (' + typ + ')';
+      } else if (cat) {
+        titleEl.textContent = cat + ' Matters';
+        if (subtitleEl) subtitleEl.textContent = 'All matters under ' + cat;
+      } else {
+        titleEl.textContent = 'All Matters';
+        if (subtitleEl) subtitleEl.textContent = 'All active & closed legal and company tasks';
+      }
+    }
+    
+    // 2. Toggle UI filter sections
+    var tmFilterBox = document.getElementById('tm-reg-filters');
+    var cpFilterBox = document.getElementById('cp-reg-filters');
+    var standardSearchWrap = document.getElementById('standard-search-wrap');
+    var standardTabsWrap = document.getElementById('standard-tabs-wrap');
+    
+    if (tmFilterBox) tmFilterBox.classList.toggle('hidden', !isTMReg);
+    if (cpFilterBox) cpFilterBox.classList.toggle('hidden', !isCPReg);
+    if (standardSearchWrap) standardSearchWrap.classList.toggle('hidden', isTMReg || isCPReg);
+    if (standardTabsWrap) standardTabsWrap.classList.toggle('hidden', isTMReg || isCPReg);
+    
+    // Hide Completed/Overdue tabs for New Application
+    var isTMNewApp = (cat === 'Trademark' && (typ === 'New Application' || typ === 'New Applications'));
+    var tabOverdue = document.getElementById('tab-overdue');
+    var tabCompleted = document.getElementById('tab-completed');
+    if (tabOverdue) tabOverdue.classList.toggle('hidden', isTMNewApp);
+    if (tabCompleted) tabCompleted.classList.toggle('hidden', isTMNewApp);
+    
+    // 3. Update active tab styling on standard views
+    document.querySelectorAll('.table-tabs .tab').forEach(function(el) {
+      el.classList.remove('active');
+      if (el.innerText.includes(stat)) el.classList.add('active');
+    });
+    
+    // 4. Update thead columns for MatterList page
+    var theadPage = document.getElementById('matters-page-thead');
+    if (theadPage) {
+      if (isTMReg) {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Trademark / Matter Name</th>
+            <th>Mark Type</th>
+            <th>Application No.</th>
+            <th>Class</th>
+            <th>Company</th>
+            <th>Renewal Due Date</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      } else if (isCPReg) {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Copyright / Work Name</th>
+            <th>Application No.</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      } else {
+        theadPage.innerHTML = `
+          <tr>
+            <th style="width: 36px;"><input type="checkbox"></th>
+            <th>Matter / Application No.</th>
+            <th>Type</th>
+            <th>Next Action</th>
+            <th>Next Date</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        `;
+      }
+    }
+    
+    // 5. Populate dropdown options for Company and Class
+    if (isTMReg) {
+      var allRegTM = this.matters.filter(function(m) {
+        var c = (m.Category || '').trim();
+        var s = (m.Status || '').trim().toLowerCase();
+        var ds = (m._displayStatus || '').trim().toLowerCase();
+        return c === 'Trademark' && (s === 'registered' || ds === 'registered');
+      });
+      
+      var compSelect = document.getElementById('tm-filt-company');
+      if (compSelect) {
+        var curComp = compSelect.value;
+        var companies = [];
+        allRegTM.forEach(function(m) {
+          var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (comp && companies.indexOf(comp) === -1) companies.push(comp);
+        });
+        companies.sort();
+        var compHtml = '<option value="">All Companies</option>';
+        companies.forEach(function(c) {
+          compHtml += '<option value="' + c + '"' + (c === curComp ? ' selected' : '') + '>' + c + '</option>';
+        });
+        compSelect.innerHTML = compHtml;
+      }
+      
+      var classSelect = document.getElementById('tm-filt-class');
+      if (classSelect) {
+        var curClass = classSelect.value;
+        var classes = [];
+        allRegTM.forEach(function(m) {
+          var k = (m['Class'] || '').trim();
+          if (k && classes.indexOf(k) === -1) classes.push(k);
+        });
+        classes.sort();
+        var classHtml = '<option value="">All Classes</option>';
+        classes.forEach(function(cl) {
+          classHtml += '<option value="' + cl + '"' + (cl === curClass ? ' selected' : '') + '>' + cl + '</option>';
+        });
+        classSelect.innerHTML = classHtml;
+      }
+    }
+    
+    if (isCPReg) {
+      var allRegCP = this.matters.filter(function(m) {
+        var c = (m.Category || '').trim();
+        var s = (m.Status || '').trim().toLowerCase();
+        var ds = (m._displayStatus || '').trim().toLowerCase();
+        return c === 'Copyright' && (s === 'registered' || ds === 'registered');
+      });
+      
+      var cpCompSelect = document.getElementById('cp-filt-company');
+      if (cpCompSelect) {
+        var curCpComp = cpCompSelect.value;
+        var cpCompanies = [];
+        allRegCP.forEach(function(m) {
+          var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (comp && cpCompanies.indexOf(comp) === -1) cpCompanies.push(comp);
+        });
+        cpCompanies.sort();
+        var cpCompHtml = '<option value="">All Companies</option>';
+        cpCompanies.forEach(function(c) {
+          cpCompHtml += '<option value="' + c + '"' + (c === curCpComp ? ' selected' : '') + '>' + c + '</option>';
+        });
+        cpCompSelect.innerHTML = cpCompHtml;
+      }
+    }
+    
+    var selTMCompany = (document.getElementById('tm-filt-company') ? document.getElementById('tm-filt-company').value.trim() : '');
+    var selTMClass = (document.getElementById('tm-filt-class') ? document.getElementById('tm-filt-class').value.trim() : '');
+    var selCPCompany = (document.getElementById('cp-filt-company') ? document.getElementById('cp-filt-company').value.trim() : '');
+    var searchQ = (window.currentSearchQuery || '').toLowerCase();
+
+    // 6. Filter items with strict rules
+    var filtered = this.matters.filter(function(m) {
+      var mStatus = (m.Status || '').trim();
+      var mDispStatus = (m._displayStatus || mStatus).trim();
+      var mStatusLower = mStatus.toLowerCase();
+      var mDispLower = mDispStatus.toLowerCase();
+      var mCategory = (m.Category || '').trim();
+      var mType = (m.Type || '').trim();
+      var mTypeLower = mType.toLowerCase();
+
+      // Case A: Active Trademarks (Only Registered Trademarks)
+      if (isTMReg) {
+        if (mCategory !== 'Trademark') return false;
+        // Strictly show only Registered trademarks
+        if (mStatusLower !== 'registered' && mDispLower !== 'registered') return false;
+        
+        // Filter by Company dropdown
+        if (selTMCompany) {
+          var mOwner = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (mOwner !== selTMCompany) return false;
+        }
+        
+        // Filter by Class dropdown
+        if (selTMClass) {
+          var mClass = (m['Class'] || '').trim();
+          if (mClass !== selTMClass) return false;
+        }
+        
+        return true;
+      }
+      
+      // Case B: Active Copyrights (Only Registered Copyrights)
+      if (isCPReg) {
+        if (mCategory !== 'Copyright') return false;
+        // Strictly show only Registered copyrights
+        if (mStatusLower !== 'registered' && mDispLower !== 'registered') return false;
+        
+        // Filter by Company dropdown
+        if (selCPCompany) {
+          var mOwner = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+          if (mOwner !== selCPCompany) return false;
+        }
+        
+        return true;
+      }
+
+      // Case C: Standard Sub-Module or Category View (Strict Filtering)
+      // Category Match
+      var catMatch = cat ? (mCategory === cat) : true;
+      
+      // Sub-module / Type Match: EXACT match so Trademark -> New Application NEVER displays Opposition, Hearing, etc.
+      var typeMatch = true;
+      if (typ) {
+        var fTypeLower = typ.toLowerCase();
+        typeMatch = (mTypeLower === fTypeLower || mTypeLower.replace(/s$/, '') === fTypeLower.replace(/s$/, ''));
+      }
+      
+      // Status Tab Match
+      var statMatch = (stat && stat !== 'All') ? (mDispStatus === stat || mStatus === stat) : true;
+      
+      // Standard search query
+      var searchMatch = true;
+      if (searchQ) {
+        var blob = (m['Matter Name'] + ' ' + (m['Application / Case No.'] || '') + ' ' + (m['Registration No.'] || '') + ' ' + mCategory + ' ' + mType).toLowerCase();
+        searchMatch = blob.includes(searchQ);
+      }
+      
+      return catMatch && typeMatch && statMatch && searchMatch;
+    });
+    
+    // 7. Render Rows
+    var pageHtml = '';
+    var dashHtml = '';
+    
+    if (filtered.length === 0) {
+      var colSpan = isTMReg ? 9 : (isCPReg ? 6 : 7);
+      pageHtml = `<tr><td colspan="${colSpan}" style="text-align:center; padding:32px; color:var(--text-muted);">No records found matching the specified criteria.</td></tr>`;
+      dashHtml = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">No matters found.</td></tr>`;
+    } else {
+      filtered.forEach(function(m) {
+        var statusClass = 'bg-gray';
+        var dispStat = m._displayStatus || m.Status;
+        if (dispStat === 'Pending') statusClass = 'bg-yellow';
+        if (dispStat === 'Under Process') statusClass = 'bg-blue';
+        if (dispStat === 'Overdue') statusClass = 'bg-red';
+        if (dispStat === 'Completed' || dispStat === 'Registered' || dispStat === 'Active') statusClass = 'bg-green text-green';
+        
+        var prioClass = 'bg-gray';
+        if (m.Priority === 'High') prioClass = 'bg-red text-red';
+        if (m.Priority === 'Medium') prioClass = 'bg-yellow text-yellow';
+        
+        var daysLeftHtml = '';
+        if (m._daysLeft !== null && m._daysLeft >= 0) {
+          if (m._daysLeft === 0) daysLeftHtml = ' <span style="color:#d97706">(Today)</span>';
+          else if (m._daysLeft === 1) daysLeftHtml = ' <span style="color:#d97706">(Tomorrow)</span>';
+        }
+        
+        var typeStyle = '';
+        if (m.Type === 'Opposition') typeStyle = 'class="text-red"';
+        else if (m.Type === 'New Application') typeStyle = 'class="text-blue"';
+        else if (m.Type === 'Rectification') typeStyle = 'class="text-purple"';
+        else if (m.Type === 'Company' || m.Type === 'Compliance / ROC') typeStyle = 'class="text-green"';
+        else if (m.Type === 'Copyright') typeStyle = 'class="text-purple"';
+
+        // Custom columns for TM Registration:
+        // Matter Name | Reg No | App No | Class | Proprietor | Reg Date | Renewal Due Date | Status | Actions
+        if (isTMReg) {
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'edit') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td><strong>${m['Matter Name']}</strong></td>
+              <td>${m['Mark Type'] || 'Word Mark'}</td>
+              <td>${m['Application / Case No.'] || '-'}</td>
+              <td><span class="badge bg-gray">${m['Class'] || 'Class 35'}</span></td>
+              <td>${m['Proprietor / Owner'] || m['Client / Company'] || '-'}</td>
+              <td>${formatDateJS(m['Renewal Due Date'] || m['Next Date'])}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">Edit</button>
+              </td>
+            </tr>
+          `;
+        } 
+        // Custom columns for Copyright Registration:
+        // Work Name | Reg No | App No | Owner | Reg Date | Status | Actions
+        else if (isCPReg) {
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'edit') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td><strong>${m['Matter Name']}</strong></td>
+              <td>${m['Application / Case No.'] || '-'}</td>
+              <td>${m['Proprietor / Owner'] || m['Client / Company'] || '-'}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">Edit</button>
+              </td>
+            </tr>
+          `;
+        } 
+        // Standard Matters columns
+        else {
+          var isTMNewApp = (m.Category === 'Trademark' && (m.Type === 'New Application' || m.Type === 'New Applications'));
+          
+          pageHtml += `
+            <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && event.target.innerText !== 'more_vert') App.navigateTo('matter-details', '${m.ID}')">
+              <td><input type="checkbox"></td>
+              <td>
+                <strong>${m['Matter Name']}</strong><br>
+                <span class="text-muted">App No. ${m['Application / Case No.'] || '-'}</span>
+              </td>
+              <td><span ${typeStyle}>${m.Type || '-'}</span></td>
+              <td>${m['Next Action'] || '-'}</td>
+              <td>${formatDateJS(m['Next Date'])}${daysLeftHtml}</td>
+              <td><span class="badge ${statusClass}">${dispStat}</span></td>
+              <td style="text-align:right;">
+                ${isTMNewApp ? `
+                  <select onchange="App.handleNewAppAction('${m.ID}', this.value); this.value='';" onclick="event.stopPropagation()" style="padding:4px; font-size:12px; border-radius:4px; border:1px solid #ddd; background:white;">
+                    <option value="">Action</option>
+                    <option value="mark_registered">Mark as Registered</option>
+                    <option value="mark_done">Mark as Done</option>
+                    <option value="edit">Edit</option>
+                  </select>
+                ` : `
+                  <span class="material-symbols-outlined dots-menu" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">more_vert</span>
+                `}
+              </td>
+            </tr>
+          `;
+        }
+
+        // Dashboard table always gets the standard view
+        dashHtml += `
+          <tr style="cursor:pointer;" onclick="if(event.target.tagName !== 'INPUT' && event.target.innerText !== 'more_vert') App.navigateTo('matter-details', '${m.ID}')">
+            <td><input type="checkbox"></td>
+            <td>
+              <strong>${m['Matter Name']}</strong><br>
+              <span class="text-muted">App No. ${m['Application / Case No.'] || '-'}</span>
+            </td>
+            <td><span ${typeStyle}>${m.Type || '-'}</span></td>
+            <td>${m['Next Action'] || '-'}</td>
+            <td>${formatDateJS(m['Next Date'])}${daysLeftHtml}</td>
+            <td><span class="badge ${statusClass}">${dispStat}</span></td>
+            <td style="text-align:right;">
+              <span class="material-symbols-outlined dots-menu" onclick="event.stopPropagation(); App.navigateTo('matter-form', '${m.ID}')">more_vert</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+    
+    var tbodyPage = document.getElementById('matters-page-tbody');
+    var tbodyDash = document.getElementById('matters-tbody');
+    if (tbodyPage) tbodyPage.innerHTML = pageHtml;
+    if (tbodyDash) tbodyDash.innerHTML = dashHtml;
+  },
+  
+  loadMatterForm: function(id) {
+    var form = document.getElementById('matterForm');
+    if (!form) return;
+    form.reset();
+    document.getElementById('matter-id').value = '';
+    
+    // Populate dropdowns from Master Data
+    App.updateModuleDropdowns();
+
+    var titleEl = document.getElementById('matter-form-title');
+    var badgeEl = document.getElementById('matter-form-badge');
+    var subEl = document.getElementById('matter-form-subtitle');
+    if (titleEl) titleEl.innerText = id ? 'Edit Matter Details' : 'New Matter Registration';
+    if (badgeEl) {
+      badgeEl.innerText = id ? 'Editing Mode' : 'New Entry';
+      badgeEl.style.background = id ? '#fef3c7' : '#e0f2fe';
+      badgeEl.style.color = id ? '#d97706' : '#0284c7';
+    }
+    if (subEl) subEl.innerText = id ? 'Modify specifications, update task status, and synchronize statutory deadlines.' : 'Register and manage intellectual property, track critical deadlines, and configure reminders.';
+
+    setTimeout(function() { App.toggleMatterFields(); }, 0);
+    
+    if (id) {
+      this.showLoading();
+      google.script.run
+        .withSuccessHandler(function(m) {
+          if (m) {
+            document.getElementById('matter-id').value = m.ID;
+            if (titleEl) titleEl.innerText = 'Edit: ' + (m['Matter Name'] || 'Matter #' + m.ID);
+            
+            var brandVal = m['Brand Name'] || m['Matter Name'] || '';
+            var matterNameVal = m['Matter Name'] || brandVal || '';
+            if (document.getElementById('f-name')) document.getElementById('f-name').value = matterNameVal;
+            if (document.getElementById('f-appno')) document.getElementById('f-appno').value = m['Application / Case No.'] || m['Registration No.'] || '';
+            if (document.getElementById('f-class')) document.getElementById('f-class').value = m['Class'] || '';
+            
+            if (document.getElementById('f-regdate')) {
+              var rd = m['Registration Date'] ? new Date(m['Registration Date']) : null;
+              if (rd && !isNaN(rd.getTime())) document.getElementById('f-regdate').value = rd.toISOString().split('T')[0];
+            }
+            if (document.getElementById('f-renewdate')) {
+              var rwd = m['Renewal Due Date'] ? new Date(m['Renewal Due Date']) : null;
+              if (rwd && !isNaN(rwd.getTime())) document.getElementById('f-renewdate').value = rwd.toISOString().split('T')[0];
+            }
+
+            document.getElementById('f-category').value = m.Category || 'Trademark';
+            document.getElementById('f-type').value = m.Type || '';
+            document.getElementById('f-status').value = m.Status || 'Pending';
+            
+            // Set Dropdown Values
+            var compVal = m['Company Name'] || m['Proprietor / Owner'] || m['Client / Company'] || '';
+            var agentVal = m['Agent Name'] || '';
+            
+            App.setDropdownValueOrAdd('f-company', compVal);
+            App.setDropdownValueOrAdd('f-agent', agentVal);
+            App.setDropdownValueOrAdd('f-brand', brandVal);
+            document.getElementById('f-nextaction').value = m['Next Action'] || '';
+            
+            var d = m['Next Date'] ? new Date(m['Next Date']) : null;
+            if(d && !isNaN(d.getTime())) {
+              document.getElementById('f-nextdate').value = d.toISOString().split('T')[0];
+            }
+            
+            document.getElementById('f-reminder').checked = (m['Reminder Enabled'] === 'Yes');
+            document.getElementById('f-remdays').value = m['Reminder Days'] || '7,3,1';
+            App.toggleMatterFields();
+          }
+          App.hideLoading();
+        })
+        .withFailureHandler(function() {
+          App.hideLoading();
+          App.showToast("Error loading matter details", true);
+        })
+        .getMatterById(id);
+    }
+  },
+  
+
+  handleNewAppAction: function(id, action) {
+    if (!action) return;
+    var matter = this.matters.find(function(m) { return m.ID == id; });
+    if (!matter) return;
+    
+    if (action === 'edit') {
+      this.navigateTo('matter-form', id);
+    } else if (action === 'mark_registered') {
+      matter.Status = 'Registered';
+      matter.Type = 'Registration';
+      matter._displayStatus = 'Registered';
+      this.showToast(matter['Matter Name'] + " marked as Registered and moved to Active Trademarks!");
+      this.renderMattersTable(window.currentCategoryFilter, window.currentStatusFilter);
+    } else if (action === 'mark_done') {
+      matter.Status = 'Completed';
+      matter._displayStatus = 'Completed';
+      this.showToast(matter['Matter Name'] + " marked as Done.");
+      this.renderMattersTable(window.currentCategoryFilter, window.currentStatusFilter);
+    }
+  },
+
+  toggleMatterFields: function() {
+    var cat = document.getElementById('f-category');
+    if (!cat) return;
+    var category = cat.value;
+    
+    var brandGrp = document.getElementById('group-brand');
+    var matterNameGrp = document.getElementById('group-matter-name');
+    var labelMatterName = document.getElementById('label-matter-name');
+    var agentGrp = document.getElementById('group-agent');
+    var classGrp = document.getElementById('group-class');
+    var compGrp = document.getElementById('group-company');
+    var regDateGrp = document.getElementById('group-regdate');
+    var renewDateGrp = document.getElementById('group-renewdate');
+    var labelAppNo = document.getElementById('label-appno');
+    
+    // Reset displays
+    if (brandGrp) brandGrp.style.display = 'none';
+    if (matterNameGrp) matterNameGrp.style.display = 'none';
+    if (agentGrp) agentGrp.style.display = 'none';
+    if (classGrp) classGrp.style.display = 'none';
+    if (compGrp) compGrp.style.display = 'none';
+    if (regDateGrp) regDateGrp.style.display = 'none';
+    if (renewDateGrp) renewDateGrp.style.display = 'none';
+    
+    if (category === 'Trademark') {
+      if (brandGrp) brandGrp.style.display = 'block';
+      if (agentGrp) agentGrp.style.display = 'block';
+      if (classGrp) classGrp.style.display = 'block';
+      if (compGrp) compGrp.style.display = 'block';
+      if (regDateGrp) regDateGrp.style.display = 'block';
+      if (renewDateGrp) renewDateGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Reg / Application No.';
+    } else if (category === 'Copyright') {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Work / Matter Title <span class="req">*</span>';
+      }
+      if (agentGrp) agentGrp.style.display = 'block';
+      if (compGrp) compGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Reg / Application No.';
+    } else if (category === 'Company Tasks') {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Task / Matter Title <span class="req">*</span>';
+      }
+      if (compGrp) compGrp.style.display = 'block';
+      if (labelAppNo) labelAppNo.innerText = 'Filing / Reference No.';
+    } else {
+      if (matterNameGrp) {
+        matterNameGrp.style.display = 'block';
+        if (labelMatterName) labelMatterName.innerHTML = 'Task Title <span class="req">*</span>';
+      }
+      if (labelAppNo) labelAppNo.innerText = 'Reference No.';
+    }
+  },
+  
+  populateDropdown: function(id, itemsOrString, defaultLabel) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var curVal = sel.value;
+    var label = defaultLabel || '-- Select --';
+    sel.innerHTML = '<option value="">' + label + '</option>';
+    if (!itemsOrString) return;
+    
+    var list = [];
+    if (typeof itemsOrString === 'string') {
+      list = itemsOrString.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    } else if (Array.isArray(itemsOrString)) {
+      list = itemsOrString.map(function(it) {
+        return (typeof it === 'object' && it !== null) ? (it.value || it.name || '') : String(it);
+      }).filter(Boolean);
+    }
+    
+    list.forEach(function(item) {
+      var opt = document.createElement('option');
+      opt.value = item;
+      opt.textContent = item;
+      if (item === curVal) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  },
+
+  setDropdownValueOrAdd: function(id, val) {
+    var sel = document.getElementById(id);
+    if (!sel || !val) return;
+    var found = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === val) {
+        sel.selectedIndex = i;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      var opt = document.createElement('option');
+      opt.value = val;
+      opt.textContent = val;
+      opt.selected = true;
+      sel.appendChild(opt);
+    }
+  },
+
+  updateModuleDropdowns: function() {
+    // 1. Matter Form fields
+    this.populateDropdown('f-company', this.masterData.companies, '-- Select Company --');
+    this.populateDropdown('f-brand', this.masterData.brands, '-- Select Brand --');
+    this.populateDropdown('f-agent', this.masterData.agents, '-- Select Agent --');
+    
+
+
+    // 4. Matter Filter Dropdowns (Active Trademarks & Active Copyrights)
+    var tmCompSel = document.getElementById('tm-filt-company');
+    if (tmCompSel) {
+      var curTm = tmCompSel.value;
+      var tmCompanies = [];
+      (this.masterData.companies || []).forEach(function(c) {
+        var v = (typeof c === 'object' ? c.value : c).trim();
+        if (v && tmCompanies.indexOf(v) === -1) tmCompanies.push(v);
+      });
+      (this.matters || []).forEach(function(m) {
+        var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+        if (comp && tmCompanies.indexOf(comp) === -1) tmCompanies.push(comp);
+      });
+      tmCompanies.sort();
+      var tmHtml = '<option value="">All Companies</option>';
+      tmCompanies.forEach(function(c) {
+        tmHtml += '<option value="' + escapeHtml(c) + '"' + (c === curTm ? ' selected' : '') + '>' + escapeHtml(c) + '</option>';
+      });
+      tmCompSel.innerHTML = tmHtml;
+    }
+
+    var cpCompSel = document.getElementById('cp-filt-company');
+    if (cpCompSel) {
+      var curCp = cpCompSel.value;
+      var cpCompanies = [];
+      (this.masterData.companies || []).forEach(function(c) {
+        var v = (typeof c === 'object' ? c.value : c).trim();
+        if (v && cpCompanies.indexOf(v) === -1) cpCompanies.push(v);
+      });
+      (this.matters || []).forEach(function(m) {
+        var comp = (m['Proprietor / Owner'] || m['Client / Company'] || '').trim();
+        if (comp && cpCompanies.indexOf(comp) === -1) cpCompanies.push(comp);
+      });
+      cpCompanies.sort();
+      var cpHtml = '<option value="">All Companies</option>';
+      cpCompanies.forEach(function(c) {
+        cpHtml += '<option value="' + escapeHtml(c) + '"' + (c === curCp ? ' selected' : '') + '>' + escapeHtml(c) + '</option>';
+      });
+      cpCompSel.innerHTML = cpHtml;
+    }
+  },
+
+  // --- Master Data Management ---
+  loadMasterData: function(callback) {
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (data) {
+          self.masterData = {
+            companies: data.companies || [],
+            brands: data.brands || [],
+            agents: data.agents || []
+          };
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          if (callback) callback();
+        }
+      })
+      .withFailureHandler(function(err) {
+        console.error("Failed to load master data:", err);
+      })
+      .getMasterData();
+  },
+
+  switchMasterTab: function(tab) {
+    this.currentMasterTab = tab;
+    ['companies', 'brands', 'agents'].forEach(function(t) {
+      var tabBtn = document.getElementById('tab-' + t);
+      var panel = document.getElementById('panel-' + t);
+      if (tabBtn) tabBtn.classList.toggle('active', t === tab);
+      if (panel) panel.classList.toggle('active', t === tab);
+    });
+  },
+
+  filterBrands: function(query) {
+    this.brandSearchQuery = (query || '').toLowerCase().trim();
+    this.renderBrandsList();
+  },
+
+  renderMasterData: function() {
+    var coCount = (this.masterData.companies || []).length;
+    var brCount = (this.masterData.brands || []).length;
+    var agCount = (this.masterData.agents || []).length;
+    
+    var elCo = document.getElementById('badge-companies-count');
+    var elBr = document.getElementById('badge-brands-count');
+    var elAg = document.getElementById('badge-agents-count');
+    if (elCo) elCo.innerText = coCount;
+    if (elBr) elBr.innerText = brCount;
+    if (elAg) elAg.innerText = agCount;
+
+    this.renderCompaniesList();
+    this.renderBrandsList();
+    this.renderAgentsList();
+  },
+
+  renderCompaniesList: function() {
+    var container = document.getElementById('md-companies-list');
+    if (!container) return;
+    var items = this.masterData.companies || [];
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">business</span>
+          <p>No companies found. Click <strong>+ Add Company</strong> to add your first company.</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    items.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-company">
+              <span class="material-symbols-outlined" style="font-size:18px;">business</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Company" onclick="App.openMasterModal('Company', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Company" onclick="App.deleteMasterItem('Company', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  renderBrandsList: function() {
+    var container = document.getElementById('md-brands-list');
+    if (!container) return;
+    var allBrands = this.masterData.brands || [];
+    var q = this.brandSearchQuery;
+    var filtered = q ? allBrands.filter(function(b) { return (b.value || '').toLowerCase().includes(q); }) : allBrands;
+    
+    var descEl = document.getElementById('brand-count-desc');
+    if (descEl) {
+      descEl.innerText = q ? ('Showing ' + filtered.length + ' of ' + allBrands.length + ' brands') : (allBrands.length + ' registered brands');
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">label</span>
+          <p>${q ? 'No brands matching "' + escapeHtml(q) + '".' : 'No brands found. Click <strong>+ Add Brand</strong> to add your first brand.'}</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    filtered.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-brand">
+              <span class="material-symbols-outlined" style="font-size:18px;">label</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Brand" onclick="App.openMasterModal('Brand', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Brand" onclick="App.deleteMasterItem('Brand', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  renderAgentsList: function() {
+    var container = document.getElementById('md-agents-list');
+    if (!container) return;
+    var items = this.masterData.agents || [];
+    if (items.length === 0) {
+      container.innerHTML = `
+        <div class="md-empty-state" style="grid-column: 1 / -1;">
+          <span class="material-symbols-outlined md-empty-icon">support_agent</span>
+          <p>No agents found. Click <strong>+ Add Agent</strong> to add your first agent.</p>
+        </div>
+      `;
+      return;
+    }
+    var html = '';
+    items.forEach(function(item) {
+      var valEsc = escapeHtml(item.value);
+      var idEsc = escapeHtml(item.id);
+      var valParam = valEsc.replace(/'/g, "\\'");
+      html += `
+        <div class="md-item-card">
+          <div class="md-item-info">
+            <div class="md-item-icon md-icon-agent">
+              <span class="material-symbols-outlined" style="font-size:18px;">support_agent</span>
+            </div>
+            <span class="md-item-name" title="${valEsc}">${valEsc}</span>
+          </div>
+          <div class="md-item-actions">
+            <button type="button" class="md-btn-icon" title="Edit Agent" onclick="App.openMasterModal('Agent', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+            </button>
+            <button type="button" class="md-btn-icon md-btn-delete" title="Delete Agent" onclick="App.deleteMasterItem('Agent', '${idEsc}', '${valParam}')">
+              <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  },
+
+  openMasterModal: function(type, id, currentValue) {
+    var isEdit = !!id;
+    var modal = document.getElementById('md-modal');
+    if (!modal) return;
+    
+    document.getElementById('md-modal-title').innerText = isEdit ? ('Edit ' + type) : ('Add ' + type);
+    document.getElementById('md-modal-label').innerText = type + ' Name *';
+    document.getElementById('md-modal-type').value = type;
+    document.getElementById('md-modal-id').value = id || '';
+    
+    var input = document.getElementById('md-modal-input');
+    input.placeholder = 'Enter ' + type.toLowerCase() + ' name...';
+    input.value = currentValue ? currentValue.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'") : '';
+    
+    modal.classList.remove('hidden');
+    setTimeout(function() { input.focus(); }, 50);
+  },
+
+  closeMasterModal: function() {
+    var modal = document.getElementById('md-modal');
+    if (modal) modal.classList.add('hidden');
+    var form = document.getElementById('md-modal-form');
+    if (form) form.reset();
+  },
+
+  saveMasterItem: function() {
+    var type = document.getElementById('md-modal-type').value;
+    var id = document.getElementById('md-modal-id').value;
+    var val = document.getElementById('md-modal-input').value.trim();
+    if (!val) {
+      App.showToast("Please enter a name.", true);
+      return;
+    }
+    
+    var listKey = (type === 'Company') ? 'companies' : ((type === 'Brand') ? 'brands' : 'agents');
+    var self = this;
+    this.showLoading();
+    
+    if (id) {
+      // Edit
+      google.script.run
+        .withSuccessHandler(function(res) {
+          self.hideLoading();
+          var it = (self.masterData[listKey] || []).find(function(x) { return x.id === id; });
+          if (it) it.value = val;
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          self.closeMasterModal();
+          self.showToast(type + " updated successfully!");
+        })
+        .withFailureHandler(function(err) {
+          self.hideLoading();
+          self.showToast("Failed to update " + type.toLowerCase() + ".", true);
+        })
+        .updateMasterDataItem(id, val);
+    } else {
+      // Add
+      google.script.run
+        .withSuccessHandler(function(res) {
+          self.hideLoading();
+          var newItem = (res && res.item) ? res.item : { id: type.toLowerCase() + '_' + Date.now(), value: val };
+          if (!self.masterData[listKey]) self.masterData[listKey] = [];
+          self.masterData[listKey].push(newItem);
+          self.renderMasterData();
+          self.updateModuleDropdowns();
+          self.closeMasterModal();
+          self.showToast(type + " added successfully!");
+        })
+        .withFailureHandler(function(err) {
+          self.hideLoading();
+          self.showToast("Failed to add " + type.toLowerCase() + ".", true);
+        })
+        .addMasterDataItem(type, val);
+    }
+  },
+
+  deleteMasterItem: function(type, id, name) {
+    var decodedName = name.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    if (!confirm("Are you sure you want to delete " + type + " '" + decodedName + "'?")) {
+      return;
+    }
+    
+    var listKey = (type === 'Company') ? 'companies' : ((type === 'Brand') ? 'brands' : 'agents');
+    var self = this;
+    this.showLoading();
+    
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.masterData[listKey] = (self.masterData[listKey] || []).filter(function(x) { return x.id !== id; });
+        self.renderMasterData();
+        self.updateModuleDropdowns();
+        self.showToast(type + " deleted successfully.");
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to delete " + type.toLowerCase() + ".", true);
+      })
+      .deleteMasterDataItem(id);
+  },
+
+  // --- Calendar Settings & Google Calendar API Setup ---
+  loadSettings: function() {
+    google.script.run
+      .withSuccessHandler(function(s) {
+        if(s) {
+          App.settings = s;
+          if (document.getElementById('setting-calendar')) {
+            document.getElementById('setting-calendar').value = s.default_calendar || s.calendar || 'Primary Calendar';
+          }
+          if (document.getElementById('setting-remdays')) {
+            document.getElementById('setting-remdays').value = s.default_remdays || s.reminder_days || '7,3,1';
+          }
+          // Google Calendar API fields
+          if (document.getElementById('gcal-client-id')) {
+            document.getElementById('gcal-client-id').value = s.gcal_client_id || '';
+          }
+          if (document.getElementById('gcal-client-secret')) {
+            document.getElementById('gcal-client-secret').value = s.gcal_client_secret || '';
+          }
+          if (document.getElementById('gcal-calendar-id')) {
+            document.getElementById('gcal-calendar-id').value = s.gcal_calendar_id || '';
+          }
+          if (document.getElementById('gcal-auto-sync')) {
+            document.getElementById('gcal-auto-sync').checked = (s.gcal_auto_sync !== 'false');
+          }
+          if (document.getElementById('gcal-sync-interval')) {
+            document.getElementById('gcal-sync-interval').value = s.gcal_sync_interval || 'realtime';
+          }
+          // Sync event type checkboxes
+          if (document.getElementById('gcal-sync-deadlines')) {
+            document.getElementById('gcal-sync-deadlines').checked = (s.gcal_sync_deadlines !== 'false');
+          }
+          if (document.getElementById('gcal-sync-hearings')) {
+            document.getElementById('gcal-sync-hearings').checked = (s.gcal_sync_hearings !== 'false');
+          }
+          if (document.getElementById('gcal-sync-renewals')) {
+            document.getElementById('gcal-sync-renewals').checked = (s.gcal_sync_renewals !== 'false');
+          }
+          if (document.getElementById('gcal-sync-tasks')) {
+            document.getElementById('gcal-sync-tasks').checked = (s.gcal_sync_tasks === 'true');
+          }
+          // Update connection status
+          App.updateCalendarConnectionStatus(s);
+          // Last sync info
+          if (document.getElementById('gcal-last-sync-text') && s.gcal_last_sync) {
+            document.getElementById('gcal-last-sync-text').textContent = 'Last sync: ' + formatDateJS(s.gcal_last_sync);
+          }
+          if (document.getElementById('gcal-sync-count') && s.gcal_sync_count) {
+            document.getElementById('gcal-sync-count').textContent = s.gcal_sync_count + ' events synced';
+          }
+        }
+      })
+      .getSettings();
+  },
+
+  saveCalendarSettingsForm: function() {
+    var calEl = document.getElementById('setting-calendar');
+    var remEl = document.getElementById('setting-remdays');
+    var data = {
+      default_calendar: calEl ? calEl.value : 'Primary Calendar',
+      default_remdays: remEl ? remEl.value : '7,3,1',
+      gcal_auto_sync: document.getElementById('gcal-auto-sync') ? String(document.getElementById('gcal-auto-sync').checked) : 'true',
+      gcal_sync_interval: document.getElementById('gcal-sync-interval') ? document.getElementById('gcal-sync-interval').value : 'realtime',
+      gcal_sync_deadlines: document.getElementById('gcal-sync-deadlines') ? String(document.getElementById('gcal-sync-deadlines').checked) : 'true',
+      gcal_sync_hearings: document.getElementById('gcal-sync-hearings') ? String(document.getElementById('gcal-sync-hearings').checked) : 'true',
+      gcal_sync_renewals: document.getElementById('gcal-sync-renewals') ? String(document.getElementById('gcal-sync-renewals').checked) : 'true',
+      gcal_sync_tasks: document.getElementById('gcal-sync-tasks') ? String(document.getElementById('gcal-sync-tasks').checked) : 'false'
+    };
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.showToast("Calendar settings saved successfully!");
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to save calendar settings.", true);
+      })
+      .saveCalendarSettings(data);
+  },
+
+  // --- Google Calendar API Setup Functions ---
+  saveGoogleCalendarApi: function() {
+    var clientId = document.getElementById('gcal-client-id').value.trim();
+    var clientSecret = document.getElementById('gcal-client-secret').value.trim();
+    var calendarId = document.getElementById('gcal-calendar-id').value.trim();
+
+    if (!clientId || !clientSecret) {
+      this.showToast("Please enter both Client ID and Client Secret.", true);
+      return;
+    }
+
+    var data = {
+      gcal_client_id: clientId,
+      gcal_client_secret: clientSecret,
+      gcal_calendar_id: calendarId || 'primary',
+      gcal_connected: 'true',
+      gcal_connected_at: new Date().toISOString()
+    };
+
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function() {
+        self.hideLoading();
+        self.showToast("Google Calendar API connected successfully!");
+        self.updateCalendarConnectionStatus({ gcal_connected: 'true', gcal_client_id: clientId });
+      })
+      .withFailureHandler(function() {
+        self.hideLoading();
+        self.showToast("Failed to save API credentials.", true);
+      })
+      .saveCalendarSettings(data);
+  },
+
+  toggleCalendarInstructions: function() {
+    var body = document.getElementById('gcal-instructions-body');
+    var toggle = body.previousElementSibling;
+    if (body.classList.contains('hidden')) {
+      body.classList.remove('hidden');
+      toggle.classList.add('open');
+    } else {
+      body.classList.add('hidden');
+      toggle.classList.remove('open');
+    }
+  },
+
+  toggleSecretVisibility: function() {
+    var input = document.getElementById('gcal-client-secret');
+    var icon = document.getElementById('gcal-eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.textContent = 'visibility_off';
+    } else {
+      input.type = 'password';
+      icon.textContent = 'visibility';
+    }
+  },
+
+  testCalendarConnection: function() {
+    var clientId = document.getElementById('gcal-client-id').value.trim();
+    var clientSecret = document.getElementById('gcal-client-secret').value.trim();
+
+    if (!clientId || !clientSecret) {
+      this.showToast("Please enter API credentials first.", true);
+      return;
+    }
+
+    var btn = document.getElementById('gcal-btn-test');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 1s linear infinite;">sync</span> Testing...';
+
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(result) {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span> Test Connection';
+        if (result && result.success) {
+          self.showToast("Connection successful! Calendar API is working.");
+          self.updateCalendarConnectionStatus({ gcal_connected: 'true', gcal_client_id: clientId });
+        } else {
+          self.showToast("Connection failed: " + (result ? result.error : "Unknown error"), true);
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">wifi_tethering</span> Test Connection';
+        self.showToast("Connection test failed: " + err.message, true);
+      })
+      .testCalendarApiConnection(clientId, clientSecret);
+  },
+
+  manualCalendarSync: function() {
+    this.showLoading();
+    var self = this;
+    google.script.run
+      .withSuccessHandler(function(result) {
+        self.hideLoading();
+        if (result && result.synced !== undefined) {
+          self.showToast("Sync complete! " + result.synced + " events synchronized.");
+          if (document.getElementById('gcal-sync-count')) {
+            document.getElementById('gcal-sync-count').textContent = result.synced + ' events synced';
+          }
+          if (document.getElementById('gcal-last-sync-text')) {
+            document.getElementById('gcal-last-sync-text').textContent = 'Last sync: Just now';
+          }
+        } else {
+          self.showToast("Calendar sync completed.");
+        }
+      })
+      .withFailureHandler(function(err) {
+        self.hideLoading();
+        self.showToast("Sync failed: " + (err ? err.message : "Unknown error"), true);
+      })
+      .syncAllCalendarEvents();
+  },
+
+  updateCalendarConnectionStatus: function(settings) {
+    var banner = document.getElementById('gcal-status-banner');
+    var dot = document.getElementById('gcal-status-dot');
+    var text = document.getElementById('gcal-status-text');
+    var meta = document.getElementById('gcal-status-meta');
+    var connectBtn = document.getElementById('gcal-btn-connect');
+
+    if (!banner) return;
+
+    if (settings && settings.gcal_connected === 'true' && settings.gcal_client_id) {
+      banner.classList.add('connected');
+      text.textContent = 'Connected';
+      meta.textContent = 'Google Calendar API is active and syncing';
+      if (connectBtn) {
+        connectBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">link_off</span> Update Credentials';
+      }
+    } else {
+      banner.classList.remove('connected');
+      text.textContent = 'Not Connected';
+      meta.textContent = 'Set up your Google Calendar API to sync deadlines and reminders';
+      if (connectBtn) {
+        connectBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">link</span> Connect & Authorize';
+      }
+    }
+  },
+
+  saveMatterForm: function() {
+    var id = document.getElementById('matter-id').value;
+    var catEl = document.getElementById('f-category');
+    var category = catEl ? catEl.value : 'Trademark';
+    
+    var companyVal = document.getElementById('f-company') ? document.getElementById('f-company').value : '';
+    var brandVal = document.getElementById('f-brand') ? document.getElementById('f-brand').value : '';
+    var nameInputVal = document.getElementById('f-name') ? document.getElementById('f-name').value.trim() : '';
+    
+    // For Trademark, Brand Name is the mark name; otherwise use Matter Title
+    var finalMatterName = (category === 'Trademark' ? (brandVal || nameInputVal) : (nameInputVal || brandVal)) || 'Untitled Matter';
+    
+    var appRegNo = document.getElementById('f-appno') ? document.getElementById('f-appno').value.trim() : '';
+    
+    var data = {
+      'Matter Name': finalMatterName,
+      'Application / Case No.': appRegNo,
+      'Registration No.': appRegNo,
+      'Class': document.getElementById('f-class') ? document.getElementById('f-class').value : '',
+      'Proprietor / Owner': companyVal,
+      'Client / Company': companyVal,
+      'Company Name': companyVal,
+      'Agent Name': document.getElementById('f-agent') ? document.getElementById('f-agent').value : '',
+      'Brand Name': (category === 'Trademark' ? brandVal : ''),
+      'Registration Date': document.getElementById('f-regdate') ? document.getElementById('f-regdate').value : '',
+      'Renewal Due Date': document.getElementById('f-renewdate') ? document.getElementById('f-renewdate').value : '',
+      'Category': category,
+      'Type': document.getElementById('f-type') ? document.getElementById('f-type').value : '',
+      'Status': document.getElementById('f-status') ? document.getElementById('f-status').value : 'Pending',
+      'Next Action': document.getElementById('f-nextaction') ? document.getElementById('f-nextaction').value : '',
+      'Next Date': document.getElementById('f-nextdate') ? document.getElementById('f-nextdate').value : '',
+      'Reminder Enabled': (document.getElementById('f-reminder') && document.getElementById('f-reminder').checked) ? 'Yes' : 'No',
+      'Reminder Days': document.getElementById('f-remdays') ? document.getElementById('f-remdays').value : '7,3,1'
+    };
+    if (id) data.ID = id;
+    
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function() {
+        App.hideLoading();
+        App.showToast("Matter saved successfully!");
+        App.navigateTo('matters');
+      })
+      .withFailureHandler(function() {
+        App.hideLoading();
+        App.showToast("Failed to save matter.", true);
+      })
+      .saveMatter(data);
+  },
+  
+  // --- Matter Details & Activity ---
+  loadMatterDetails: function(id) {
+    this.currentMatterId = id;
+    this.showLoading();
+    
+    // 1. Fetch Matter Details
+    google.script.run
+      .withSuccessHandler(function(m) {
+        if(m) {
+          document.getElementById('md-title').innerText = m['Matter Name'];
+          document.getElementById('md-appno').innerText = m['Application / Case No.'] || '-';
+          if (document.getElementById('md-regno')) document.getElementById('md-regno').innerText = m['Registration No.'] || '-';
+          if (document.getElementById('md-class')) document.getElementById('md-class').innerText = m['Class'] || '-';
+          if (document.getElementById('md-owner')) document.getElementById('md-owner').innerText = m['Proprietor / Owner'] || m['Client / Company'] || '-';
+          if (document.getElementById('md-regdate')) document.getElementById('md-regdate').innerText = formatDateJS(m['Registration Date'] || m['Created Date']);
+          if (document.getElementById('md-renewdate')) document.getElementById('md-renewdate').innerText = formatDateJS(m['Renewal Due Date'] || m['Next Date']);
+          document.getElementById('md-type').innerText = m.Category + ' / ' + m.Type;
+          document.getElementById('md-status').innerText = m._displayStatus || m.Status;
+          document.getElementById('md-nextaction').innerText = m['Next Action'] || '-';
+          document.getElementById('md-nextdate').innerText = formatDateJS(m['Next Date']);
+        }
+      })
+      .getMatterById(id);
+      
+    // 2. Fetch Activity Log
+    google.script.run
+      .withSuccessHandler(function(logs) {
+        var ul = document.getElementById('md-activity-log');
+        ul.innerHTML = '';
+        if(logs.length === 0) {
+          ul.innerHTML = '<li style="padding:16px; text-align:center; color:gray;">No activity found.</li>';
+        } else {
+          logs.forEach(function(l) {
+            var li = document.createElement('li');
+            li.style.padding = '12px 0';
+            li.style.borderBottom = '1px solid #eee';
+            li.innerHTML = `
+              <div style="font-size:12px; color:gray;">${formatDateJS(l.Date)} - ${l.User}</div>
+              <div style="font-weight:500; margin-top:4px;">${l.Action}</div>
+              <div style="font-size:13px; color:#444;">${l.Description || ''}</div>
+            `;
+            ul.appendChild(li);
+          });
+        }
+        App.hideLoading();
+      })
+      .getMatterActivity(id);
+  },
+  
+  // --- Tasks ---
+  loadTasks: function() {
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function(tasks) {
+        App.tasks = tasks;
+        var tbody = document.getElementById('tasks-tbody');
+        tbody.innerHTML = '';
+        if(tasks.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">No tasks found.</td></tr>';
+        } else {
+          tasks.forEach(function(t) {
+            var statusClass = (t._displayStatus === 'Overdue') ? 'bg-red' : 'bg-blue';
+            var tr = `
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>${t['Task Name']}</strong></td>
+                <td>${formatDateJS(t['Due Date'])}</td>
+                <td><span class="badge ${statusClass}">${t._displayStatus || t.Status}</span></td>
+              </tr>
+            `;
+            tbody.innerHTML += tr;
+          });
+        }
+        App.hideLoading();
+      })
+      .getAllTasks();
+  },
+  
+  saveTaskForm: function() {
+    var data = {
+      'Task Name': document.getElementById('t-name').value,
+      'Due Date': document.getElementById('t-date').value,
+      'Status': 'Pending'
+    };
+    this.showLoading();
+    google.script.run
+      .withSuccessHandler(function() {
+        document.getElementById('task-form-card').classList.add('hidden');
+        App.loadTasks();
+      })
+      .saveTask(data);
+  }
+};
+
+function formatDateJS(dateStr) {
+  if(!dateStr) return '-';
+  var d = new Date(dateStr);
+  if(isNaN(d.getTime())) return dateStr;
+  var options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return d.toLocaleDateString('en-GB', options);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  App.init();
+});
+</script>
+
+    
+  </body>
+</html>

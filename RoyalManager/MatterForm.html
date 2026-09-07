@@ -1,0 +1,262 @@
+<!-- ROYAL MANAGER: Modern MatterForm View -->
+<div id="view-matter-form" class="view-section">
+  <div class="modern-form-container">
+    
+    <!-- Top Header Navigation & Action Bar -->
+    <div class="form-header-bar">
+      <div class="form-header-left">
+        <button type="button" class="btn-back-circle" title="Back to Matters" onclick="App.navigateTo('matters')">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div class="form-header-title-group">
+          <h2>
+            <span id="matter-form-title">New Matter Registration</span>
+            <span id="matter-form-badge" class="form-badge-pill">New Entry</span>
+          </h2>
+          <p id="matter-form-subtitle">Register and manage intellectual property, track critical deadlines, and configure reminders.</p>
+        </div>
+      </div>
+      <div class="form-header-actions" style="display:flex; gap:10px; align-items:center;">
+        <button type="button" class="btn btn-secondary" onclick="App.navigateTo('matters')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('matterForm').requestSubmit()">
+          <span class="material-symbols-outlined" style="font-size:18px;">save</span> Save Matter
+        </button>
+      </div>
+    </div>
+
+    <!-- Form Element -->
+    <form id="matterForm" onsubmit="event.preventDefault(); App.saveMatterForm();">
+      <input type="hidden" id="matter-id">
+
+      <!-- SECTION 1: Category & Identification -->
+      <div class="form-section-card">
+        <div class="form-section-header">
+          <div class="section-icon-wrap sec-icon-blue">
+            <span class="material-symbols-outlined">edit_document</span>
+          </div>
+          <div class="section-title-wrap">
+            <h3>Category & Matter Details</h3>
+            <p>Select category to adapt fields dynamically for Trademarks, Copyrights, or Company matters</p>
+          </div>
+        </div>
+
+        <div class="form-grid-12">
+          <!-- Category -->
+          <div class="form-field col-4">
+            <label for="f-category">
+              <span>Category <span class="req">*</span></span>
+              <span class="field-hint-text">Governs form fields</span>
+            </label>
+            <select id="f-category" class="modern-input" onchange="App.toggleMatterFields()" required>
+              <option value="Trademark">Trademark</option>
+              <option value="Copyright">Copyright</option>
+              <option value="Company Tasks">Company Tasks</option>
+              <option value="General Tasks">General Tasks</option>
+            </select>
+          </div>
+
+          <!-- Type -->
+          <div class="form-field col-4">
+            <label for="f-type">
+              <span>Matter Type / Action</span>
+              <span class="field-hint-text">Select or type custom</span>
+            </label>
+            <input type="text" id="f-type" class="modern-input" placeholder="e.g. Opposition, Registration, New Application" list="typeList">
+            <datalist id="typeList">
+              <option value="Total TM Registration">
+              <option value="Registration">
+              <option value="Total Copyright Application">
+              <option value="New Application">
+              <option value="Opposition">
+              <option value="Rectification">
+              <option value="Renewal">
+              <option value="Objection / Reply">
+              <option value="Hearing">
+              <option value="Compliance / ROC">
+              <option value="Agreements">
+              <option value="Licences">
+            </datalist>
+          </div>
+
+          <!-- Status -->
+          <div class="form-field col-4">
+            <label for="f-status">
+              <span>Current Status <span class="req">*</span></span>
+            </label>
+            <select id="f-status" class="modern-input" required>
+              <option value="Pending">Pending</option>
+              <option value="Under Process">Under Process</option>
+              <option value="Waiting for Client">Waiting for Client</option>
+              <option value="Waiting for Registry / Court">Waiting for Registry / Court</option>
+              <option value="Completed">Completed</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+
+          <!-- Company / Proprietor (Master Data) -->
+          <div class="form-field col-6" id="group-company">
+            <label for="f-company">
+              <span>Company / Proprietor</span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-company" class="modern-input">
+              <option value="">-- Select Company --</option>
+            </select>
+          </div>
+
+          <!-- Brand Name (Trademark only: Master Data dropdown) -->
+          <div class="form-field col-6" id="group-brand">
+            <label for="f-brand">
+              <span>Brand Name <span class="req">*</span></span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-brand" class="modern-input" onchange="if(document.getElementById('f-name')) document.getElementById('f-name').value = this.value;">
+              <option value="">-- Select Brand --</option>
+            </select>
+          </div>
+
+          <!-- Matter / Task Name (For Copyright / Company Tasks / General Tasks) -->
+          <div class="form-field col-6" id="group-matter-name" style="display:none;">
+            <label for="f-name">
+              <span id="label-matter-name">Matter Title <span class="req">*</span></span>
+              <span class="field-hint-text">Display title</span>
+            </label>
+            <input type="text" id="f-name" class="modern-input" placeholder="e.g. Software Code Copyright, Annual Return MGT-7">
+          </div>
+
+          <!-- Combined Reg / Application No (Single unified field) -->
+          <div class="form-field col-6" id="group-appno">
+            <label for="f-appno">
+              <span id="label-appno">Reg / Application No.</span>
+              <span class="field-hint-text">Registration or Case No.</span>
+            </label>
+            <input type="text" id="f-appno" class="modern-input" placeholder="e.g. TM-449120 / 6611916">
+          </div>
+
+          <!-- Class (Dynamic: Trademark only) -->
+          <div class="form-field col-6" id="group-class">
+            <label for="f-class">
+              <span>Class</span>
+              <span class="field-hint-text">Trademark Class</span>
+            </label>
+            <input type="text" id="f-class" class="modern-input" placeholder="e.g. Class 35, Class 9 & 42">
+          </div>
+
+          <!-- Agent / Attorney (Dynamic: Trademark & Copyright) -->
+          <div class="form-field col-6" id="group-agent">
+            <label for="f-agent">
+              <span>Agent / Attorney</span>
+              <span class="field-hint-text"><a href="#" onclick="event.preventDefault(); App.navigateTo('settings');" style="color:var(--primary); text-decoration:none;">+ Manage in Settings</a></span>
+            </label>
+            <select id="f-agent" class="modern-input">
+              <option value="">-- Select Agent --</option>
+            </select>
+          </div>
+
+          <!-- Dates: Registration Date & Renewal Due Date (Dynamic: Trademark only) -->
+          <div class="form-field col-3" id="group-regdate">
+            <label for="f-regdate">
+              <span>Registration Date</span>
+            </label>
+            <input type="date" id="f-regdate" class="modern-input">
+          </div>
+
+          <div class="form-field col-3" id="group-renewdate">
+            <label for="f-renewdate">
+              <span>Renewal Due Date</span>
+            </label>
+            <input type="date" id="f-renewdate" class="modern-input">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Action, Deadlines & Google Calendar -->
+      <div class="form-section-card" style="border-color:#fde68a;">
+        <div class="form-section-header" style="border-bottom-color:#fef3c7;">
+          <div class="section-icon-wrap sec-icon-amber">
+            <span class="material-symbols-outlined">notifications_active</span>
+          </div>
+          <div class="section-title-wrap">
+            <h3>Immediate Action & Smart Reminders</h3>
+            <p>Schedule upcoming filings, statutory deadlines, and automated Google Calendar sync</p>
+          </div>
+        </div>
+
+        <div class="form-grid-12">
+          <!-- Next Action -->
+          <div class="form-field col-8">
+            <label for="f-nextaction">
+              <span>Next Action Required</span>
+              <span class="field-hint-text">What needs to be filed or reviewed?</span>
+            </label>
+            <input type="text" id="f-nextaction" class="modern-input" placeholder="e.g. File Evidence in Support of Opposition / Pay Renewal Fee">
+          </div>
+
+          <!-- Next Date -->
+          <div class="form-field col-4">
+            <label for="f-nextdate">
+              <span>Deadline / Next Date</span>
+              <span class="field-hint-text">Statutory due date</span>
+            </label>
+            <input type="date" id="f-nextdate" class="modern-input" style="font-weight: 600; color: #b45309;">
+          </div>
+
+          <!-- Reminder Config Box -->
+          <div class="col-12">
+            <div class="reminder-accent-box">
+              <div class="reminder-toggle-row">
+                <div class="reminder-toggle-label" onclick="var chk = document.getElementById('f-reminder'); chk.checked = !chk.checked;">
+                  <label class="switch-toggle" onclick="event.stopPropagation();">
+                    <input type="checkbox" id="f-reminder" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                  <div>
+                    <div style="font-weight:600; font-size:13.5px; color:#92400e; display:flex; align-items:center; gap:6px;">
+                      <span class="material-symbols-outlined" style="font-size:18px;">event</span>
+                      Google Calendar Auto-Sync
+                    </div>
+                    <div style="font-size:12px; color:#b45309;">Creates and updates an event on your connected Google Calendar with deadline alerts.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-grid-12" style="margin-top:10px;">
+                <div class="form-field col-6">
+                  <label for="f-remdays" style="color:#92400e;">
+                    <span>Alert Schedule (days prior, comma separated)</span>
+                  </label>
+                  <input type="text" id="f-remdays" class="modern-input" value="7,3,1" placeholder="e.g. 7,3,1" style="background:#ffffff; border-color:#fcd34d;">
+                </div>
+                <div class="col-6" style="display:flex; flex-direction:column; justify-content:center;">
+                  <div style="font-size:11.5px; font-weight:600; color:#92400e; margin-bottom:4px;">Quick Presets:</div>
+                  <div class="reminder-presets">
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '7,3,1'">7, 3, 1 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '15,7,1'">15, 7, 1 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '30,15,7'">30, 15, 7 Days</button>
+                    <button type="button" class="preset-chip" onclick="document.getElementById('f-remdays').value = '1'">1 Day (Urgent)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ACTION FOOTER -->
+      <div class="form-action-footer">
+        <div class="left-info">
+          <span class="material-symbols-outlined" style="font-size:18px; color:#10b981;">check_circle</span>
+          <span>All changes will be securely synchronized to your database.</span>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button type="button" class="btn btn-secondary" style="padding:10px 20px;" onclick="App.navigateTo('matters')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="padding:10px 28px; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(0,98,255,0.25);">
+            <span class="material-symbols-outlined" style="font-size:19px;">save</span> Save Matter
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+

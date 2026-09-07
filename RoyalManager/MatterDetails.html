@@ -1,0 +1,65 @@
+<!-- ROYAL MANAGER: MatterDetails View -->
+<div id="view-matter-details" class="view-section">
+  
+  <div class="table-header">
+    <h2 style="display:flex; align-items:center; gap:12px;">
+      <span class="material-symbols-outlined" style="cursor:pointer;" onclick="App.navigateTo('matters')">arrow_back</span>
+      <span id="md-title">Loading...</span>
+    </h2>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" onclick="App.navigateTo('matter-form', currentMatterId)">
+        <span class="material-symbols-outlined">edit</span> Edit
+      </button>
+    </div>
+  </div>
+
+  <div class="category-grid" style="grid-template-columns: 2fr 1fr; gap:24px;">
+    
+    <!-- Left Column: Details -->
+    <div style="display:flex; flex-direction:column; gap:24px;">
+      <div class="card">
+        <h3 style="margin-bottom:16px; color:var(--primary); font-size:16px;">Matter Information</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div><label class="text-muted">Application / Case No.</label><div id="md-appno" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Registration No.</label><div id="md-regno" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Class</label><div id="md-class" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Proprietor / Owner</label><div id="md-owner" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Registration Date</label><div id="md-regdate" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Renewal Due Date</label><div id="md-renewdate" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Category & Type</label><div id="md-type" style="font-weight:500;">-</div></div>
+          <div><label class="text-muted">Status</label><div id="md-status" style="font-weight:500;">-</div></div>
+
+        </div>
+      </div>
+      
+      <div class="card" style="border-left: 4px solid #f59e0b;">
+        <h3 style="margin-bottom:16px; font-size:16px; display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-outlined" style="color:#f59e0b;">schedule</span> 
+          Next Action & Deadline
+        </h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div><label class="text-muted">Action Required</label><div id="md-nextaction" style="font-weight:500; font-size:16px;">-</div></div>
+          <div><label class="text-muted">Deadline Date</label><div id="md-nextdate" style="font-weight:500; font-size:16px; color:#d97706;">-</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:16px; color:var(--primary); font-size:16px;">Connected Services</h3>
+        <div style="display:flex; gap:16px;">
+          <span class="text-muted">No external services connected.</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Activity Log -->
+    <div>
+      <div class="card" style="height: 100%;">
+        <h3 style="margin-bottom:16px; color:var(--text-dark); font-size:16px;">Activity Log</h3>
+        <ul id="md-activity-log" style="list-style:none; margin:0; padding:0;">
+          <!-- JS will populate -->
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>

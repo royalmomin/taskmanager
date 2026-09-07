@@ -1,0 +1,73 @@
+<!-- ROYAL MANAGER: Sidebar (Redesign) -->
+<aside id="sidebar">
+  <div class="logo">
+    <span class="material-symbols-outlined icon">balance</span>
+    <div class="text-wrapper">
+      <span class="title">Royal Manager</span>
+      <span class="subtitle">Legal &bull; IP &bull; Company</span>
+    </div>
+  </div>
+  
+  <div class="nav-menu">
+    <a href="#" class="nav-item active" data-route="dashboard">
+      <span class="material-symbols-outlined">home</span>
+      <span class="nav-text">Dashboard</span>
+    </a>
+    
+    <!-- Trademark Group -->
+    <a href="#" class="nav-item open" onclick="this.classList.toggle('open'); document.getElementById('tm-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">copyright</span>
+      <span class="nav-text">Trademark</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu open" id="tm-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Active">Active Trademarks</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-New Application">New Application</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Opposition">Opposition</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Rectification">Rectification</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Renewal">Renewal</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Hearing">Hearing</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Trademark-Other">Other</a>
+    </div>
+    
+    <!-- Copyright Group -->
+    <a href="#" class="nav-item" onclick="this.classList.toggle('open'); document.getElementById('cp-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">copyright</span>
+      <span class="nav-text">Copyright</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu" id="cp-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Active">Active Copyrights</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-New Application">New Application</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Objection / Reply">Objections / Reply</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Hearing">Hearing</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Copyright-Other">Other</a>
+    </div>
+    
+    <!-- Company Group -->
+    <a href="#" class="nav-item" onclick="this.classList.toggle('open'); document.getElementById('co-sub').classList.toggle('open'); return false;">
+      <span class="material-symbols-outlined">domain</span>
+      <span class="nav-text">Company Tasks</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </a>
+    <div class="sub-menu" id="co-sub">
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-ROC">Compliance / ROC</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-Agr">Agreements</a>
+      <a href="#" class="sub-item" data-route="matters" data-param="Company-Lic">Licences</a>
+    </div>
+    
+    <a href="#" class="nav-item" data-route="tasks">
+      <span class="material-symbols-outlined">task_alt</span>
+      <span class="nav-text">My Tasks</span>
+    </a>
+    <a href="#" class="nav-item" data-route="settings">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="nav-text">Settings</span>
+    </a>
+  </div>
+  
+  <div class="sidebar-quote">
+    "Organise Today<br>Win Tomorrow"
+    <span class="author">&mdash; Royal Momin</span>
+  </div>
+</aside>
